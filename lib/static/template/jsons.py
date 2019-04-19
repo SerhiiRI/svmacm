@@ -5,6 +5,9 @@ from lib.dockerAPI.container_function import \
     memoryRAM       , \
     imageNameTag    , \
     containerNameId
+from lib.static.authentication.encryption import \
+    encode , \
+    decode
 from multiprocessing import Pool
 from functools       import wraps
 from flask           import json
@@ -118,10 +121,14 @@ def JSONKey(
         "key" : key
     }
 
+def JSONSaveUserList(key, userList:list):
+    userList = [dict({"login":log, "password":passwd}) for log, passwd in userList]
+    print(userList)
+    with open("users.file", "w+") as authfile:
+        authfile.write(encode(key, json.dumps(userList)))
 
-def JSONTemplate(login, password):
-    if(login and password):
-        return json.dumps({
-            "login" : login,
-            "password" : password
-        })
+def JSONVerifiedUser(key, login, password):
+    with open("users.file", "r") as authfile:
+        dictionary = json.loads(decode(key, authfile.read()))
+        return (dictionary["login"]    == login and
+                dictionary["password"] == password)
