@@ -9,8 +9,9 @@ renderMain = Blueprint('renderMain', __name__, template_folder='templates')
 
 
 @renderMain.route('/')
+@serviceHTMLType
 @authenticate
-def svmacm(message):
+def svmacm(key):
     backValue = {}
     if not request.is_json:
         backValue = json.dumps(
