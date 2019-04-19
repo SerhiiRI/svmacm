@@ -6,12 +6,11 @@ flask = Flask(__name__)
 
 renderMain = Blueprint('renderMain', __name__, template_folder='templates')
 
-
-
-@renderMain.route('/')
-@serviceHTMLType
+@renderMain.route('/', method="POST")
+@serviceHTMLType('/')
 @authenticate
 def svmacm(key):
+    """
     backValue = {}
     if not request.is_json:
         backValue = json.dumps(
@@ -20,7 +19,10 @@ def svmacm(key):
                 "instruction": "http://localhost/instruction"
             })
     else:
+    """
+    if(true):
         backValue = json.dumps([{
+        "temporarykey": key,
         "type": "container",
         "name": "temp",
         "id" : 123321,
@@ -37,12 +39,6 @@ def svmacm(key):
             },
         "status" : "ACTIVE"
         }])
-        # authorisation = json.loads(request.get_json())
-        # print(authorisation["login"])
-        # print(authorisation["password"])
-        authorisation = request.get_json()
-        print(authorisation["login"])
-        print(authorisation["password"])
     resp = Response(backValue)
     resp.content_type = "application/json"
     flask.process_response(resp)
