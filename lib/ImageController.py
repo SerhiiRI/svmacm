@@ -1,7 +1,7 @@
 from docker.errors import NotFound
-from lib.Interfaces.Controller import Controller
 
-class ImageController(Controller):
+
+class ImageController:
     """ Image controller """
     def __init__(self, printing_function):
         super(ImageController, self).__init__()

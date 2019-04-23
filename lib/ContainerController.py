@@ -1,7 +1,6 @@
-from lib.Interfaces.Controller import Controller
 from pprint import PrettyPrinter
 
-class ContainerController(Controller):
+class ContainerController:
     """ Image controller """
     def __init__(self, printing_function):
         super(ContainerController, self).__init__()
@@ -41,7 +40,7 @@ class ContainerController(Controller):
     def stats_container(self, id_or_name):
         container = self._client.containers.get(id_or_name)
         stats = container.stats(stream=False)
-        # self.pprinter.pprint(stats)
+        self.pprinter.pprint(stats)
         return stats
 
     def proces_container(self, id_or_name):

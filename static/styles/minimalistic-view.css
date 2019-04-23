@@ -1,0 +1,172 @@
+.content {
+    margin-top: 30px;
+    margin-left: 30px;
+    max-width: 900px;
+}
+.svmacm-title {
+    color: #772849;
+    /*color: #cc0956;*/
+    /*margin-left: 30px;*/
+    font-size: 60px;
+    font-family: 'Bungee Shade', cursive;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    margin: 0;
+    text-align: left;
+    background-color: black;
+}
+
+header .login-section a{
+    color: #FFF;
+    text-decoration: none;
+}
+
+header .login-section a:hover{
+    color: #FFF;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+header .login-section{
+
+    background-color: black;
+    text-align: right;
+}
+
+header .login-section input[type=text]{
+    background-color: black;
+    color: #ff006f;
+    margin-left: 10px;
+    margin-right: 0;
+    margin-bottom: 0;
+    border: none ;
+    font-size: 1.1em;
+    height: 100%;
+    font-family:"Courier New", Courier, monospace;
+}
+
+header .login-section input[type=password]{
+    background-color: black;
+    color: #ff006f;
+    margin-left: 10px;
+    margin-right: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border: none ;
+    font-size: 1.1em;
+    height: 100%;
+    font-family:"Courier New", Courier, monospace;
+}
+
+header .login-section input[type=submit]{
+    /*padding:5px 15px;*/
+    background:#000;
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    font-size: 20px;
+    margin-left: 10px;
+    /*width: 100px;*/
+    /*height: 100%;*/
+    font-family:"Courier New", Courier, monospace;
+    color: #ff006f;
+
+}
+
+header .login-section .text{
+    text-align: right;
+}
+
+header .header-annotation{
+    font-family:"Courier New", Courier, monospace;
+    /* font for login form */
+    margin-left: 10px;
+    /*margin-top: 30px;*/
+    /*margin-bottom: 30px;*/
+    font-size: 15px;
+    /*text-shadow: 2px 2px black;*/
+    color: #ffffff;
+    /*font-family: 'Bungee Inline', cursive;*/
+    /*font-family: 'Pacifico', cursive;*/
+    /*font-family: 'Press Start 2P', cursive;*/
+    /*font-family: 'Kaushan Script', cursive;*/
+    /*font-family: 'Bungee Shade', cursive;*/
+    /*font-family: 'VT323', monospace;*/
+    /*font-family: 'Space Mono', monospace;*/
+    /*font-family: 'Poiret One', cursive;*/
+}
+
+footer{
+    text-align: center;
+}
+footer hr{
+    width: 850px;
+    border: none;
+    background-image: linear-gradient(to right, white, #a70023, white);
+    height: 2px;
+}
+
+footer .footer-annotation{
+    margin-left: 10px;
+    /*margin-top: 30px;*/
+    /*margin-bottom: 30px;*/
+    font-size: 25px;
+    font-family: 'Kaushan Script', cursive;
+    /*text-shadow: 2px 2px black;*/
+    color: #441829;
+    /*font-family: 'Bungee Inline', cursive;*/
+    /*font-family: 'Pacifico', cursive;*/
+    /*font-family: 'Press Start 2P', cursive;*/
+    /*font-family: 'Kaushan Script', cursive;*/
+    /*font-family: 'Bungee Shade', cursive;*/
+    /*font-family: 'VT323', monospace;*/
+    /*font-family: 'Space Mono', monospace;*/
+    /*font-family: 'Poiret One', cursive;*/
+}
+
+footer .author-footer {
+    color: #a70023;
+    /*color: #cc0956;*/
+    font-size: 40px;
+    font-family: 'Bungee Shade', cursive;
+}
+
+hr{
+    /*margin-left: 30px;*/
+    width: 850px;
+    border: none;
+    background-image: linear-gradient(to right, #772849, white);
+    height: 4px;
+}
+h4{
+    /*margin-left: 30px;*/
+
+    /*margin-top: 30px;*/
+    /*margin-bottom: 30px;*/
+    font-size: 30px;
+    font-family: 'Kaushan Script', cursive;
+    /*text-shadow: 2px 2px black;*/
+    color: #772849;
+    /*font-family: 'Bungee Inline', cursive;*/
+    /*font-family: 'Pacifico', cursive;*/
+    /*font-family: 'Press Start 2P', cursive;*/
+    /*font-family: 'Kaushan Script', cursive;*/
+    /*font-family: 'Bungee Shade', cursive;*/
+    /*font-family: 'VT323', monospace;*/
+    /*font-family: 'Space Mono', monospace;*/
+    /*font-family: 'Poiret One', cursive;*/
+}
+
+p {
+    font-family:"Courier New", Courier, monospace;
+    text-indent: 50px;
+    text-align: justify;
+    font-size: 1.1em;
+}

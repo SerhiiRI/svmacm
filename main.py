@@ -1,17 +1,7 @@
 #!/usr/bin/python3
-from pprint import PrettyPrinter
-import argparse
 import os
 #import json
-from lib.ImageController import ImageController
-from lib.ContainerController import ContainerController
-from os import environ as ENV
 from flask import Flask
-from gevent.pywsgi import WSGIServer
-from flask import request
-from flask import Response
-from flask import json
-from flask import jsonify
 
 # ENV['TRASHPANDA_HOST'] = "trashpanda.pwsz.nysa.pl"
 # ENV['CLOUD_MAX_FILE_SIZE'] = '1MB'
@@ -20,82 +10,78 @@ from flask import jsonify
 # ENV['TRASHPANDA_LOGIN'] = ENV['TRASHPANDA_LOGIN'] if 'TRASHPANDA_LOGIN' in ENV else "sergiy1998"
 # ENV['TRASHPANDA_PASSWD'] = ENV['TRASHPANDA_PASSWD'] if 'TRASHPANDA_PASSWD' in ENV else "hspybxeR98>"
 
-flask = Flask(__name__)
-flask.secret_key = os.urandom(24)
+from blueprints.renderMain import renderMain
+from blueprints.logoutUser import logoutUser
 
-keys = []
+svmacm = Flask(__name__)
+svmacm.secret_key = os.urandom(24)
 
-def myPrint(*args, **kwargs):
-    print("IMAGES:")
-    print("\n".join(["\t"+"\t=> ".join(str(str(x).split("'")[1]).split(":")) for x in args]))
+svmacm.register_blueprint(renderMain)
+svmacm.register_blueprint(logoutUser)
 
-pprinter = PrettyPrinter()
-img = ImageController(myPrint)
-cntr = ContainerController(myPrint)
+
+
+
+# keys = []
+#
+# def myPrint(*args, **kwargs):
+#     print("IMAGES:")
+#     print("\n".join(["\t"+"\t=> ".join(str(str(x).split("'")[1]).split(":")) for x in args]))
+
+# pprinter = PrettyPrinter()
+# img = ImageController(myPrint)
+# cntr = ContainerController(myPrint)
 
 # cntr.start_all_containers()
-
-print(__name__)
+#
+# print(__name__)
 
 # HTML API
 
 
-@flask.route('/', methods=["GET"])
-def index():
-    return htmlindex
+# @flask.route('/', methods=["GET"])
+# def index():
+#     return htmlindex
     #username = request.cookies.get("username")
 
-@flask.errorhandler(404)
-def page_not_found(e):
-    return error404, 404 #render_template('404.html'), 404
+# @flask.route('/', methods=["POST"])
+# def index():
+#     backValue = ""
+#     if request.is_json:
+#         backValue = json.dumps([{
+#             "type": "container",
+#             "name": "temp",
+#             "id": 123321,
+#             "network": {
+#                 "received": 1332321,
+#                 "transceived": 111111,
+#                 "unit": "MB"
+#             },
+#             "cpu": 1,
+#             "ram": 12,
+#             "image": {
+#                 "name": "fedora",
+#                 "version": "version"
+#             },
+#             "status": "ACTIVE"
+#         }])
+#         authorisation = request.get_json()
+#         print(authorisation["login"])
+#         print(authorisation["password"])
+#     resp = Response(backValue)
+#     resp.content_type = "application/json"
+#     flask.process_response(resp)
+#     return resp
+    #username = request.cookies.get("username")
 
-# JSON API
-@flask.route('/', methods=['POST'])
-def gerRespond():
-    return ""
-
-htmlindex = """
-<html>
-<body>
-<div>
-<pre style='font-family:"Courier New", Courier, monospace;'>
-NAME 
-        svmac - program to manage administration cloud-layout
-SYNOPSIS
-        svmac [-dafs]
-DESCRIPTION 
-
-        Program systemowego admnistrowania dla chmury trashpandy, jest odrębnei napisanym programem, dla sterowania klientami, dostepem, oraz wykonywania usuwania, dodawania, wprowadzania zmian w danych chmóry "Trashpanda". Jest integrowany i wykorzystywany w śilniku wyszukiwarki Trashpanda.
-COMMAND-LINE OPTIONS
-        container - module for control users
-        vmachine - module for file control
-        Mandatory arguments to long options are mandatroy for short options too.
-        -r --run
-        -s --stop
-        -d --delete
-        -k --keys
-</pre>
-</div>
-</body>
-</html>
-"""
-
-error404 = """
-<html>
-<body>
-<div>
-<pre style='font-family:"Courier New", Courier, monospace;'>
-NAME 
-        404 error 
-DESCRIPTION 
-        wrong request path
-COMMAND-LINE OPTIONS
-        back to our <a href='localhost/'>main</a> or <a href='localhost/'>instruction</a> pages
-</pre>
-</div>
-</body>
-</html>
-"""
+# @flask.errorhandler(404)
+# def page_not_found(e):
+#     return error404, 404 #render_template('404.html'), 404
+#
+# # JSON API
+# @flask.route('/', methods=['POST'])
+# def gerRespond():
+#     return ""
 
 
 # def getContainers():
@@ -105,16 +91,13 @@ COMMAND-LINE OPTIONS
 
 
 
-def printattr (a):
-    print(a)
-
 
 
 # container = img.run("fedora")
 # container = img.run("haskell")
 # container = img.run("clojure")
 # container = img.run("fedora")
-listContainers = cntr.list()
+# listContainers = cntr.list()
 # print("======proceses======")
 #cntr.stats_container(listContainers[0].name)
 
@@ -129,23 +112,23 @@ listContainers = cntr.list()
 # print("---> Memory {}%".format(str(memoryRAM(d))))
 # print("---> container {} v: {}".format(*imageNameTag(listContainers[0])))
 # print("---> Status: {}".format(containerStatus(listContainers[0])))
-lllist = [{
-        "type": "container",
-        "name": "temp",
-        "id" : 123321,
-        "network" : {
-            "received" : 1332321,
-            "transceived" : 111111,
-            "unit" : "MB"
-        },
-        "cpu": 1,
-        "ram": 12,
-        "image": {
-            "name" : "fedora",
-            "version": "version"
-        },
-        "status" : "ACTIVE"
-    }]
+# lllist = [{
+#         "type": "container",
+#         "name": "temp",
+#         "id" : 123321,
+#         "network" : {
+#             "received" : 1332321,
+#             "transceived" : 111111,
+#             "unit" : "MB"
+#         },
+#         "cpu": 1,
+#         "ram": 12,
+#         "image": {
+#             "name" : "fedora",
+#             "version": "version"
+#         },
+#         "status" : "ACTIVE"
+#     }]
 # for x in listContainers:
 #     stat = cntr.stats_container(x.name)
 #     name, id = containerNameId(stat)
@@ -171,15 +154,15 @@ lllist = [{
 #         },
 #         "status" : status
 #     })
-
-# print("========stats=======")
+# cntr.stats_container(listContainers[0].name)
+# # print("========stats=======")
 # cntr.proces_container(listContainers[0].name)
-# print("========logs========")
+# # print("========logs========")
 # cntr.logs_container(listContainers[0].name)
 # pprinter.pprint(listContainers[0].image.tags)
 
-imagelist = img.list()
-pprinter.pprint(str(imagelist[0].tags).split(':'))
+# imagelist = img.list()
+# pprinter.pprint(str(imagelist[0].tags).split(':'))
 
 # cntr.stop_all_containers()
 # cntr.start_all_containers()
@@ -192,6 +175,6 @@ pprinter.pprint(str(imagelist[0].tags).split(':'))
 
 
 
-flask.run(debug =True, host="0.0.0.0", port=80)
+svmacm.run(debug=True, host="0.0.0.0", port=80)
 # httpserver = WSGIServer(('0.0.0.0', 80), flask)
 # httpserver.serve_forever()

@@ -17,7 +17,7 @@ def JSON(f):
     @wraps(f)
     def decorator(*args, **kwargs):
         return json.dumps(f(*args, **kwargs))
-    return decorator()
+    return decorator
 
 
 @JSON
@@ -104,12 +104,10 @@ def JSONImageTemplate(
 def JSONError(
     error:int    = 404,
     message:str  = "",
-    other        = 0
     ) -> dict:
     return {
         "error"    : error,
         "message"  : message,
-        "other"    : other
     }
 
 
@@ -123,12 +121,13 @@ def JSONKey(
 
 def JSONSaveUserList(key, userList:list):
     userList = [dict({"login":log, "password":passwd}) for log, passwd in userList]
-    print(userList)
     with open("users.file", "w+") as authfile:
         authfile.write(encode(key, json.dumps(userList)))
 
-def JSONVerifiedUser(key, login, password):
+def JSONVerifiedUser(key, login:str, password:str) -> bool:
     with open("users.file", "r") as authfile:
         dictionary = json.loads(decode(key, authfile.read()))
-        return (dictionary["login"]    == login and
-                dictionary["password"] == password)
+        for dic in dictionary:
+            if (str(dic["login"]) == login and str(dic["password"]) == password):
+                return True
+        return False

@@ -8,7 +8,7 @@ def cpuPercentUsage(container_stats:dict) -> int:
     CPU_PERCENT = 0.0
     CPUTotalUsage     = float(container_stats['cpu_stats']   ['cpu_usage']       ['total_usage'])
     PreCPUTotalUsage  = float(container_stats['precpu_stats']['cpu_usage']       ['total_usage'])
-    percpu_core_usage = len(  container_stats['cpu_stats']   ['cpu_usage']       ['percpu_usage'])
+    percpu_core_usage = len  (container_stats['cpu_stats']   ['cpu_usage']       ['percpu_usage'])
     SystemUsage       = float(container_stats['cpu_stats']   ['system_cpu_usage'])
     PreSystemUsage    = float(container_stats['precpu_stats']['system_cpu_usage'])
 
