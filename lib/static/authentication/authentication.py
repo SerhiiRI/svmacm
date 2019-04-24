@@ -37,12 +37,14 @@ def __verify_key(key):
             return key
     return False
 
+
 def clean_key(key):
     for log, ukey in __user_id.items():
         if ukey == key: #return key
             __user_id.pop(log)
             break
     return False
+
 
 def __verify_login(login, password):
     if (JSONVerifiedUser(__key, login, password)):
@@ -65,27 +67,22 @@ def authenticate(f):
 
         if(request.content_type == "application/json"):
             print("=> JSON", end='')
-            dictionary = dict()
             dictionary = request.get_json()
-            if "temporarykey" in dictionary:
-                print(" => temporary {}".format(dictionary["temporarykey"]), end='')
-                key = __verify_key(dictionary["temporarykey"])
+            if "key" in dictionary:
+                print(" => key {}".format(dictionary["key"]), end='')
+                key = __verify_key(dictionary["key"])
                 if key:
-                    print(" => key is verified", end='')
+                    print(" => key is verified ", end='')
                     return f(key)
-                else:
-                    return f(None)
-
 
             if "login" in dictionary and "password" in dictionary:
-                print(" => Form[Login|Password]", end='')
                 print(dictionary["login"], dictionary["password"], end='')
                 key = __verify_login(dictionary["login"], dictionary["password"])
                 if(key):
                     print(" => key is verified {} ".format(key), end='')
                     return f(key)
-                else:
-                    return f(None)
+            print('____________________________________/')
+            return f(None)
 
         else:
             print(" => HTML", end='')

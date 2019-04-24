@@ -119,6 +119,14 @@ def JSONKey(
         "key" : key
     }
 
+@JSON
+def JSONMessage(keyvalue:list):
+    d = dict()
+    for k, v in keyvalue:
+        d[str(k)] = v
+    return json.dumps(d)
+
+
 def JSONSaveUserList(key, userList:list):
     userList = [dict({"login":log, "password":passwd}) for log, passwd in userList]
     with open("users.file", "w+") as authfile:
