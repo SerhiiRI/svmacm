@@ -1,7 +1,5 @@
 #+TITLE:SCM specyfikacja API
 
-* *Standart* for *SCM* 
-
   Ten plik określia w jaki sposob odbywa się komunikacja pomiędzy klientem a serverem sterowania *SVMACM*. Plik zaweiera ścisłą specyfikacje odnośnie kontstruowania aplikacji, jej części rutingowej. 
   
 * UWAGI 
