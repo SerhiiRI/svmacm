@@ -84,7 +84,7 @@ app.run("127.0.0.1", 80, debug=True)
 #+CAPTION: JSON routing path
 | ścieżka     | opis                                               |
 |-------------+----------------------------------------------------|
-| //          | ścieżka dla otrzymania dokumentacji po API         |
+| /           | ścieżka dla otrzymania dokumentacji po API         |
 | /containers | wyświetlania oraz manipulacja contenerami          |
 | /images     | informacji o obrazach i możliwości sterowania nimi |
 | /logoutJSON | usuwania kluczu sesji użytkownika                  |
@@ -251,8 +251,8 @@ Client:
 #+BEGIN_SRC
 {
    "key": "sukabliatkey",
-   "id" : "asfj923b5479fhrawe9xpfj2x4x",
-   "function" : "start|stop|remove|reload|info"
+   "image" : "fedora",
+   "function" : "pull|run|delete|get"
 }
 #+END_SRC
 Serwer:
@@ -329,7 +329,7 @@ ERRORS:
 #+CAPTION: JSON routing path
 | ścieżka     | opis                                               |
 |-------------+----------------------------------------------------|
-| //          | ścieżka dla otrzymania dokumentacji po API         |
+| /           | ścieżka dla otrzymania dokumentacji po API         |
 | /containers | wyświetlania oraz manipulacja contenerami          |
 | /images     | informacji o obrazach i możliwości sterowania nimi |
 | /logoutHTML | usuwania kluczu sesji użytkownika                  |
