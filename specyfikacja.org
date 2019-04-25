@@ -1,0 +1,335 @@
+#+TITLE:SCM specyfikacja API
+
+  Ten plik określia w jaki sposob odbywa się komunikacja pomiędzy klientem a serverem sterowania *SVMACM*. Plik zaweiera ścisłą specyfikacje odnośnie kontstruowania aplikacji, jej części rutingowej. 
+  
+* UWAGI 
+
+  Lista uwag, odnośnie czytania tego pliku:
+  - Dany tekst zawiera mnóstwo blĄdów jIenzykowych.
+  - Dany tekst nie jest polecany dla czytania polakam z problemami serca. 
+  - Dany tekst zawiera kilkarazowe używania słowa "chmóra", napisanego przez Ó kreskowane.
+
+* Kontent
+** Blueprint realizacja
+ BluePrint - jest abstrakcja wewnętrzna framework-u flaks. BluePrint pozwala odseparować logikę programowania kodu, nie agregując go w jednym pliku. Zamiast 
+ rejestracji ściężki i funkcji która jest wykonywana w głównym pliku *main.py* korzystamy z blueprintów. Przyklad BEZ blueprintów:
+#+BEGIN_SRC python
+
+app = new Flask(__name__)
+
+@app.route('/', methods=["POST", "GET"])
+def funkcjaObsługiŻądania(key="12341"):
+    if(request.content_type == "application/json"):
+       return ....
+    ...
+
+@app.route('/logout', methods=["GET"])
+def funkcjaObsługiŻądania(key="12341"):
+    if(request.content_type == "application/json"):
+       return ....
+    ...
+#+END_SRC
+
+ Za pomocy blueprint-a określiamy caly podmodól rutingowy, w którym zanaczamy ściężki dotyćzące tego modulu i funkcji, wywolywanych przy zaznaczonym rządaniu.
+ Tworząć jeden bluepirnt w projekcie o ściężce projektwoje "//src/blueprint/renderMain.py//":
+
+#+BEGIN_SRC python
+renderMain = Blueprint(name='renderMain',import_name=__name__)
+
+@renderMain.route('/', methods=["POST", "GET"])
+def funkcjaObsługiŻądania(key="12341"):
+    if(request.content_type == "application/json"):
+       return ....
+    ...
+#+END_SRC
+
+I odpowiednio drugi dla wylogownaia twrorzymy w pliku "//src/blueprint/renderMain.py//":
+
+#+BEGIN_SRC python
+renderLogout = Blueprint(name='renderMain',import_name=__name__)
+
+@renderLogout.route('/logoutJSON', methods=["POST"])
+def funkcjaObsługiŻądania():
+    ...
+
+@renderLogout.route('/logoutHTML', methods=["GET"])
+def funkcjaObsługiŻądania():
+    ...
+#+END_SRC
+ Przez takie podejście pojawia sie opcja określenia specjalnych parametrów dla danego modulu, oraz odseparowania logiki, dla każdej zestawu ścieżek. 
+Przy tym wygłąd pliku głównego też sie zmienia. WYkonujemy tak zwaną /rejestracje/ /Blueprinta/ wewnątrz głównego pliku flask aplikacji *main.py*:
+
+#+BEGIN_SRC python
+app = Flask(__name__)
+
+app.register_blueprint(renderMain)
+app.register_blueprint(logoutUser)
+
+app.run("127.0.0.1", 80, debug=True)
+#+END_SRC
+** TODO JSON Specyfikacja
+*** Routing
+    Każda z ścieżek posiada tak zwany Blueprint po stronie flasku, który obejmuje zestaw ścieżek rutingowych oraz zestaw funkcyj dla reakcji na odpowiednio wyslany zestaw informacji wedlug procedury [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][POST]] ( Postem da sie przesylać informacje ). ponieważ serwer korzysta z wspólnych ścieżek, każdy Blueprint zawiera if, który rozróźnia żądania dla JSON a HTML sprawdzeniam parametera [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][content-type]]  nagłówka HTTP, i czy on posiada wartość *application\json*. 
+ Dla wspólnych ścieżek żądania, tak zwany ~Blueprint~ ma podobną reakcje. 
+
+#+BEGIN_QUOTE
+1. request to /containers
+2. (requestOBJ.content_type == "application/json")
+   -> TRUE : zwróć strone z zawartym w śriodku JSON-em
+   -> FALSE: domyślna konfiguracja zwraca HTML
+#+END_QUOTE
+
+#+CAPTION: JSON routing path
+| ścieżka     | opis                                               |
+|-------------+----------------------------------------------------|
+| /           | ścieżka dla otrzymania dokumentacji po API         |
+| /containers | wyświetlania oraz manipulacja contenerami          |
+| /images     | informacji o obrazach i możliwości sterowania nimi |
+| /logoutJSON | usuwania kluczu sesji użytkownika                  |
+*** JSON Hundling Spec (JHS)
+**** Wyznaczenia:
+     *key* - klucz wedlug którego będzie sie odbywala indentyfikacja użytkownika. Klucz wysylany przy każdym rządnaniu 
+**** Login
+Żądanie od użytkownika, z prośbią o logowaniu:
+#+BEGIN_SRC
+{
+   "login"   : "admin"
+   "password": "admin"
+}
+#+END_SRC
+Serwer zwraca klucz dostępu do API
+- Zle podany login i haslo
+#+CAPTION: Success Respond
+#+BEGIN_SRC
+{
+   "key": "q43j7sd_34#1ka."
+}
+#+END_SRC
+
+ERRORS:
+#+CAPTION: Zle podany login lub haslo
+#+BEGIN_SRC
+{
+   "error": 500,
+   "message": "bad login or password"
+}
+#+END_SRC
+**** Logout
+Usuwania klucza odbywa sie wedlug ścieżki /logoutJSON
+Client:
+#+BEGIN_SRC
+{
+   "key": "sukabliatkey"
+}
+#+END_SRC
+Serwer:
+#+BEGIN_SRC
+{
+   "logout": "success"
+}
+#+END_SRC
+ERRORS:
+#+BEGIN_SRC
+{
+   "error": 500,
+   "message": "bad login or password"
+}
+#+END_SRC
+**** Container
+API do sterownia kontenerów odbywa sie po ścieżce /containers
+Client:
+#+BEGIN_SRC
+{
+   "key": "sukabliatkey"
+   "id" : "asfj923b5479fhrawe9xpfj2x4x"
+   "function" : "start|stop|remove|reload|info"
+}
+#+END_SRC
+Serwer:
+#+BEGIN_SRC
+{
+   "message": "success"
+}
+#+END_SRC
+gdy *"function"* równa sie *"info"*
+#+BEGIN_SRC
+{
+   "key": "sukabliatkey"
+   "container": {
+        "type"  : "container",
+        "id"    : "asfj923b5479fhrawe9xpfj2x4x",
+        "name"  : "sukin_syn",
+        "network" : {
+            "received"    : 14297583,
+            "transceived" : 660452,
+            "unit"        : "B"
+        },
+        "cpu"    : 10,
+        "ram"    : 1,
+        "image"  : {
+            "name"    : "fedora",
+            "version" : "latest|3.5"
+        },
+        "status" : "UP"
+    }
+}
+#+END_SRC
+ERRORS:
+#+BEGIN_SRC
+{
+   "error": 500,
+   "message": "bad validataion request"
+}
+#+END_SRC
+**** Containers
+API do sterownia kontenerów odbywa sie po ścieżce /containers
+Client:
+#+BEGIN_SRC
+{
+   "key": "sukabliatkey"
+   "type" : "containers"
+   "function" : "startall|stopall|removeall|reloadall|list"
+}
+#+END_SRC
+Serwer:
+#+BEGIN_SRC
+{
+   "message": "success"
+}
+#+END_SRC
+gdy *"function"* równa sie *"list"*
+#+BEGIN_SRC
+{
+   "key": "sukabliatkey"
+   "containers": [{
+        "type"  : "container",
+        "id"    : "asfj923b5479fhrawe9xpfj2x4x",
+        "name"  : "sukin_syn",
+        "network" : {
+            "received"    : 14297583,
+            "transceived" : 660452,
+            "unit"        : "B"
+        },
+        "cpu"    : 10,
+        "ram"    : 1,
+        "image"  : {
+            "name"    : "fedora",
+            "version" : "latest|3.5"
+        },
+        "status" : "UP"
+    },{
+        "type"  : "container",
+        "id"    : "afdasfouiwj285jn79fsa921sag",
+        "name"  : "bla-bla-bla",
+        "network" : {
+            "received"    : 0,
+            "transceived" : 0,
+            "unit"        : "B"
+        },
+        "cpu"    : 13,
+        "ram"    : 4,
+        "image"  : {
+            "name"    : "debian",
+            "version" : "latest|N.N"
+        },
+        "status" : "STOPED"
+    }]
+}
+#+END_SRC
+ERRORS:
+#+BEGIN_SRC
+{
+   "error": 500,
+   "message": "bad validataion request"
+}
+#+END_SRC
+**** Image
+API do sterownia kontenerów odbywa sie po ścieżce /image
+Client:
+#+BEGIN_SRC
+{
+   "key": "sukabliatkey",
+   "image" : "fedora",
+   "function" : "pull|run|delete|get"
+}
+#+END_SRC
+Serwer:
+#+BEGIN_SRC
+{
+   "message": "success"
+}
+#+END_SRC
+gdy *"function"* równa sie *"get"*
+#+BEGIN_SRC
+{
+   "key": "sukabliatkey",
+   "images": {
+        "type"   : "image",
+        "name"   : "fedora",
+        "version": "latest"
+    }
+}
+#+END_SRC
+ERRORS:
+#+BEGIN_SRC
+{
+   "error": 500,
+   "message": "bad validataion request"
+}
+#+END_SRC
+**** Images
+API do sterownia kontenerów odbywa sie po ścieżce /images
+Client:
+#+BEGIN_SRC
+{
+   "key": "sukabliatkey",
+   "type" : "images",
+   "function" : "deleteall|list"
+}
+#+END_SRC
+Serwer:
+#+BEGIN_SRC
+{
+   "message": "success"
+}
+#+END_SRC
+gdy *"function"* równa sie *"list"*
+#+BEGIN_SRC
+{
+   "key": "sukabliatkey"
+   "images": [ {
+        "type"   : "image",
+        "name"   : "fedora",
+        "version": "latest"
+    },{
+        "type"   : "image",
+        "name"   : "haskell",
+        "version": "1.4"
+    },{
+        "type"   : "image",
+        "name"   : "clojure",
+        "version": "3.4"
+    }]
+}
+#+END_SRC
+ERRORS:
+#+BEGIN_SRC
+{
+   "error": 500,
+   "message": "bad validataion request"
+}
+#+END_SRC
+
+** TODO HTML Specyfikacja 
+*** TODO Routing 
+    Każda z ścieżek posiada tak zwany Blueprint po stronie flasku, który obejmuje zestaw ścieżek rutingowych oraz zestaw funkcyj dla reakcji na odpowiednio wyslany zestaw informacji wedlug procedury [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][GET]]. Ponieważ serwer korzysta z wspólnych ścieżek, każdy Blueprint zawiera if, który rozróźnia żądania dla JSON a HTML sprawdzeniam parametera [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][content-type]]  nagłówka HTTP, i czy on posiada wartość *application\json*. 
+
+#+CAPTION: JSON routing path
+| ścieżka     | opis                                               |
+|-------------+----------------------------------------------------|
+| /           | ścieżka dla otrzymania dokumentacji po API         |
+| /containers | wyświetlania oraz manipulacja contenerami          |
+| /images     | informacji o obrazach i możliwości sterowania nimi |
+| /logoutHTML | usuwania kluczu sesji użytkownika                  |
+
+
