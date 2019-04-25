@@ -1,0 +1,337 @@
+* *UWAGI* 
+
+  Lista uwag, odno¶nie czytania tego pliku:
+  - Dany tekst zawiera mnóstwo bl¡dów jIenzykowych.
+  - Dany tekst nie jest polecany dla czytania polakam z problemami serca. 
+  - Dany tekst zawiera kilkarazowe u¿ywania s³owa "chmóra", napisanego przez Ó kreskowane.
+
+* *Standart* for *SVMACM* 
+
+  Ten plik okre¶lia w jaki sposob odbywa siê komunikacja pomiêdzy klientem a serverem sterowania *SVMACM*. Plik zaweiera ¶cis³± specyfikacje odno¶nie kontstruowania aplikacji, jej czê¶ci rutingowej. 
+
+* Kontent
+** TODO g³ówny plik *main.py*
+** Blueprint realizacja
+ BluePrint - jest abstrakcja wewnêtrzna framework-u flaks. BluePrint pozwala odseparowaæ logikê programowania kodu, nie agreguj±c go w jednym pliku. Zamiast 
+ rejestracji ¶ciê¿ki i funkcji która jest wykonywana w g³ównym pliku *main.py* korzystamy z blueprintów. Przyklad BEZ blueprintów:
+#+BEGIN_SRC python
+
+app = new Flask(__name__)
+
+@app.route('/', methods=["POST", "GET"])
+def funkcjaObs³ugi¯±dania(key="12341"):
+    if(request.content_type == "application/json"):
+       return ....
+    ...
+
+@app.route('/logout', methods=["GET"])
+def funkcjaObs³ugi¯±dania(key="12341"):
+    if(request.content_type == "application/json"):
+       return ....
+    ...
+#+END_SRC
+
+ Za pomocy blueprint-a okre¶liamy caly podmodól rutingowy, w którym zanaczamy ¶ciê¿ki dotyæz±ce tego modulu i funkcji, wywolywanych przy zaznaczonym rz±daniu.
+ Tworz±æ jeden bluepirnt w projekcie o ¶ciê¿ce projektwoje "//src/blueprint/renderMain.py//":
+
+#+BEGIN_SRC python
+renderMain = Blueprint(name='renderMain',import_name=__name__)
+
+@renderMain.route('/', methods=["POST", "GET"])
+def funkcjaObs³ugi¯±dania(key="12341"):
+    if(request.content_type == "application/json"):
+       return ....
+    ...
+#+END_SRC
+
+I odpowiednio drugi dla wylogownaia twrorzymy w pliku "//src/blueprint/renderMain.py//":
+
+#+BEGIN_SRC python
+renderLogout = Blueprint(name='renderMain',import_name=__name__)
+
+@renderLogout.route('/logoutJSON', methods=["POST"])
+def funkcjaObs³ugi¯±dania():
+    ...
+
+@renderLogout.route('/logoutHTML', methods=["GET"])
+def funkcjaObs³ugi¯±dania():
+    ...
+#+END_SRC
+ Przez takie podej¶cie pojawia sie opcja okre¶lenia specjalnych parametrów dla danego modulu, oraz odseparowania logiki, dla ka¿dej zestawu ¶cie¿ek. 
+Przy tym wyg³±d pliku g³ównego te¿ sie zmienia. WYkonujemy tak zwan± /rejestracje/ /Blueprinta/ wewn±trz g³ównego pliku flask aplikacji *main.py*:
+
+#+BEGIN_SRC python
+app = Flask(__name__)
+
+app.register_blueprint(renderMain)
+app.register_blueprint(logoutUser)
+
+app.run("127.0.0.1", 80, debug=True)
+#+END_SRC
+** TODO JSON Specyfikacja
+*** Routing
+    Ka¿da z ¶cie¿ek posiada tak zwany Blueprint po stronie flasku, który obejmuje zestaw ¶cie¿ek rutingowych oraz zestaw funkcyj dla reakcji na odpowiednio wyslany zestaw informacji wedlug procedury [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][POST]] ( Postem da sie przesylaæ informacje ). poniewa¿ serwer korzysta z wspólnych ¶cie¿ek, ka¿dy Blueprint zawiera if, który rozró¼nia ¿±dania dla JSON a HTML sprawdzeniam parametera [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][content-type]]  nag³ówka HTTP, i czy on posiada warto¶æ *application\json*. 
+ Dla wspólnych ¶cie¿ek ¿±dania, tak zwany ~Blueprint~ ma podobn± reakcje. 
+
+#+BEGIN_QUOTE
+1. request to /containers
+2. (requestOBJ.content_type == "application/json")
+   -> TRUE : zwróæ strone z zawartym w ¶riodku JSON-em
+   -> FALSE: domy¶lna konfiguracja zwraca HTML
+#+END_QUOTE
+
+#+CAPTION: JSON routing path
+| ¶cie¿ka     | opis                                               |
+|-------------+----------------------------------------------------|
+| //          | ¶cie¿ka dla otrzymania dokumentacji po API         |
+| /containers | wy¶wietlania oraz manipulacja contenerami          |
+| /images     | informacji o obrazach i mo¿liwo¶ci sterowania nimi |
+| /logoutJSON | usuwania kluczu sesji u¿ytkownika                  |
+*** JSON Hundling Spec (JHS)
+**** Wyznaczenia:
+     *key* - klucz wedlug którego bêdzie sie odbywala indentyfikacja u¿ytkownika. Klucz wysylany przy ka¿dym rz±dnaniu 
+
+**** Login
+¯±danie od u¿ytkownika, z pro¶bi± o logowaniu:
+#+BEGIN_QUOTE
+{
+   "login"   : "admin"
+   "password": "admin"
+}
+#+END_QUOTE
+Serwer zwraca klucz dostêpu do API
+- Zle podany login i haslo
+#+CAPTION: Success Respond
+#+BEGIN_QUOTE
+{
+   "key": "q43j7sd_34#1ka."
+}
+#+END_QUOTE
+
+*ERRORS:*
+#+CAPTION: Zle podany login lub haslo
+#+BEGIN_QUOTE
+{
+   "error": 500,
+   "message": "bad login or password"
+}
+#+END_QUOTE
+**** Logout
+Usuwania klucza odbywa sie wedlug ¶cie¿ki /logoutJSON
+Client:
+#+BEGIN_QUOTE
+{
+   "key": "sukabliatkey"
+}
+#+END_QUOTE
+Serwer:
+#+BEGIN_QUOTE
+{
+   "logout": "success"
+}
+#+END_QUOTE
+*ERRORS:*
+#+BEGIN_QUOTE
+{
+   "error": 500,
+   "message": "bad login or password"
+}
+#+END_QUOTE
+**** Container
+API do sterownia kontenerów odbywa sie po ¶cie¿ce /containers
+Client:
+#+BEGIN_QUOTE
+{
+   "key": "sukabliatkey"
+   "id" : "asfj923b5479fhrawe9xpfj2x4x"
+   "function" : "start|stop|remove|reload|info"
+}
+#+END_QUOTE
+Serwer:
+#+BEGIN_QUOTE
+{
+   "message": "success"
+}
+#+END_QUOTE
+gdy *"function"* równa sie *"info"*
+#+BEGIN_QUOTE
+{
+   "key": "sukabliatkey"
+   "container": {
+        "type"  : "container",
+        "id"    : "asfj923b5479fhrawe9xpfj2x4x",
+        "name"  : "sukin_syn",
+        "network" : {
+            "received"    : 14297583,
+            "transceived" : 660452,
+            "unit"        : "B"
+        },
+        "cpu"    : 10,
+        "ram"    : 1,
+        "image"  : {
+            "name"    : "fedora",
+            "version" : "latest|3.5"
+        },
+        "status" : "UP"
+    }
+}
+#+END_QUOTE
+*ERRORS:*
+#+BEGIN_QUOTE
+{
+   "error": 500,
+   "message": "bad validataion request"
+}
+#+END_QUOTE
+**** Containers
+API do sterownia kontenerów odbywa sie po ¶cie¿ce /containers
+Client:
+#+BEGIN_QUOTE
+{
+   "key": "sukabliatkey"
+   "type" : "containers"
+   "function" : "startall|stopall|removeall|reloadall|list"
+}
+#+END_QUOTE
+Serwer:
+#+BEGIN_QUOTE
+{
+   "message": "success"
+}
+#+END_QUOTE
+gdy *"function"* równa sie *"list"*
+#+BEGIN_QUOTE
+{
+   "key": "sukabliatkey"
+   "containers": [{
+        "type"  : "container",
+        "id"    : "asfj923b5479fhrawe9xpfj2x4x",
+        "name"  : "sukin_syn",
+        "network" : {
+            "received"    : 14297583,
+            "transceived" : 660452,
+            "unit"        : "B"
+        },
+        "cpu"    : 10,
+        "ram"    : 1,
+        "image"  : {
+            "name"    : "fedora",
+            "version" : "latest|3.5"
+        },
+        "status" : "UP"
+    },{
+        "type"  : "container",
+        "id"    : "afdasfouiwj285jn79fsa921sag",
+        "name"  : "bla-bla-bla",
+        "network" : {
+            "received"    : 0,
+            "transceived" : 0,
+            "unit"        : "B"
+        },
+        "cpu"    : 13,
+        "ram"    : 4,
+        "image"  : {
+            "name"    : "debian",
+            "version" : "latest|N.N"
+        },
+        "status" : "STOPED"
+    }]
+}
+#+END_QUOTE
+*ERRORS:*
+#+BEGIN_QUOTE
+{
+   "error": 500,
+   "message": "bad validataion request"
+}
+#+END_QUOTE
+**** Image
+API do sterownia kontenerów odbywa sie po ¶cie¿ce /image
+Client:
+#+BEGIN_QUOTE
+{
+   "key": "sukabliatkey",
+   "id" : "asfj923b5479fhrawe9xpfj2x4x",
+   "function" : "start|stop|remove|reload|info"
+}
+#+END_QUOTE
+Serwer:
+#+BEGIN_QUOTE
+{
+   "message": "success"
+}
+#+END_QUOTE
+gdy *"function"* równa sie *"get"*
+#+BEGIN_QUOTE
+{
+   "key": "sukabliatkey",
+   "images": {
+        "type"   : "image",
+        "name"   : "fedora",
+        "version": "latest"
+    }
+}
+#+END_QUOTE
+*ERRORS:*
+#+BEGIN_QUOTE
+{
+   "error": 500,
+   "message": "bad validataion request"
+}
+#+END_QUOTE
+**** Images
+API do sterownia kontenerów odbywa sie po ¶cie¿ce /images
+Client:
+#+BEGIN_QUOTE
+{
+   "key": "sukabliatkey",
+   "type" : "images",
+   "function" : "deleteall|list"
+}
+#+END_QUOTE
+Serwer:
+#+BEGIN_QUOTE
+{
+   "message": "success"
+}
+#+END_QUOTE
+gdy *"function"* równa sie *"list"*
+#+BEGIN_QUOTE
+{
+   "key": "sukabliatkey"
+   "images": [ {
+        "type"   : "image",
+        "name"   : "fedora",
+        "version": "latest"
+    },{
+        "type"   : "image",
+        "name"   : "haskell",
+        "version": "1.4"
+    },{
+        "type"   : "image",
+        "name"   : "clojure",
+        "version": "3.4"
+    }]
+}
+#+END_QUOTE
+*ERRORS:*
+#+BEGIN_QUOTE
+{
+   "error": 500,
+   "message": "bad validataion request"
+}
+#+END_QUOTE
+
+** TODO HTML Specyfikacja 
+*** TODO Routing 
+    Ka¿da z ¶cie¿ek posiada tak zwany Blueprint po stronie flasku, który obejmuje zestaw ¶cie¿ek rutingowych oraz zestaw funkcyj dla reakcji na odpowiednio wyslany zestaw informacji wedlug procedury [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][GET]]. Poniewa¿ serwer korzysta z wspólnych ¶cie¿ek, ka¿dy Blueprint zawiera if, który rozró¼nia ¿±dania dla JSON a HTML sprawdzeniam parametera [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][content-type]]  nag³ówka HTTP, i czy on posiada warto¶æ *application\json*. 
+
+#+CAPTION: JSON routing path
+| ¶cie¿ka     | opis                                               |
+|-------------+----------------------------------------------------|
+| //          | ¶cie¿ka dla otrzymania dokumentacji po API         |
+| /containers | wy¶wietlania oraz manipulacja contenerami          |
+| /images     | informacji o obrazach i mo¿liwo¶ci sterowania nimi |
+| /logoutHTML | usuwania kluczu sesji u¿ytkownika                  |
+
+
