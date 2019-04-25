@@ -108,7 +108,7 @@ Serwer zwraca klucz dostępu do API
 }
 #+END_SRC
 
-*ERRORS:*
+ERRORS:
 #+CAPTION: Zle podany login lub haslo
 #+BEGIN_SRC
 {
@@ -130,7 +130,7 @@ Serwer:
    "logout": "success"
 }
 #+END_SRC
-*ERRORS:*
+ERRORS:
 #+BEGIN_SRC
 {
    "error": 500,
@@ -176,7 +176,7 @@ gdy *"function"* równa sie *"info"*
     }
 }
 #+END_SRC
-*ERRORS:*
+ERRORS:
 #+BEGIN_SRC
 {
    "error": 500,
@@ -238,7 +238,7 @@ gdy *"function"* równa sie *"list"*
     }]
 }
 #+END_SRC
-*ERRORS:*
+ERRORS:
 #+BEGIN_SRC
 {
    "error": 500,
@@ -272,7 +272,7 @@ gdy *"function"* równa sie *"get"*
     }
 }
 #+END_SRC
-*ERRORS:*
+ERRORS:
 #+BEGIN_SRC
 {
    "error": 500,
@@ -314,7 +314,7 @@ gdy *"function"* równa sie *"list"*
     }]
 }
 #+END_SRC
-*ERRORS:*
+ERRORS:
 #+BEGIN_SRC
 {
    "error": 500,
