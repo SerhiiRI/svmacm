@@ -1,7 +1,9 @@
-#+BEGIN_CENTER
-SCMACM specyfikacja API
-#+END_CENTER
+#+TITLE:SCM specyfikacja API
 
+* *Standart* for *SCM* 
+
+  Ten plik określia w jaki sposob odbywa się komunikacja pomiędzy klientem a serverem sterowania *SVMACM*. Plik zaweiera ścisłą specyfikacje odnośnie kontstruowania aplikacji, jej części rutingowej. 
+  
 * UWAGI 
 
   Lista uwag, odnośnie czytania tego pliku:
@@ -9,12 +11,7 @@ SCMACM specyfikacja API
   - Dany tekst nie jest polecany dla czytania polakam z problemami serca. 
   - Dany tekst zawiera kilkarazowe używania słowa "chmóra", napisanego przez Ó kreskowane.
 
-* *Standart* for *SVMACM* 
-
-  Ten plik określia w jaki sposob odbywa się komunikacja pomiędzy klientem a serverem sterowania *SVMACM*. Plik zaweiera ścisłą specyfikacje odnośnie kontstruowania aplikacji, jej części rutingowej. 
-
 * Kontent
-** TODO główny plik *main.py*
 ** Blueprint realizacja
  BluePrint - jest abstrakcja wewnętrzna framework-u flaks. BluePrint pozwala odseparować logikę programowania kodu, nie agregując go w jednym pliku. Zamiast 
  rejestracji ściężki i funkcji która jest wykonywana w głównym pliku *main.py* korzystamy z blueprintów. Przyklad BEZ blueprintów:
