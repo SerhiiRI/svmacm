@@ -1,3 +1,4 @@
+(setq system-time-locale "C")
 * *UWAGI* 
 
   Lista uwag, odno¶nie czytania tego pliku:
@@ -90,71 +91,70 @@ app.run("127.0.0.1", 80, debug=True)
 *** JSON Hundling Spec (JHS)
 **** Wyznaczenia:
      *key* - klucz wedlug którego bêdzie sie odbywala indentyfikacja u¿ytkownika. Klucz wysylany przy ka¿dym rz±dnaniu 
-
 **** Login
 ¯±danie od u¿ytkownika, z pro¶bi± o logowaniu:
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "login"   : "admin"
    "password": "admin"
 }
-#+END_QUOTE
+#+END_SRC
 Serwer zwraca klucz dostêpu do API
 - Zle podany login i haslo
 #+CAPTION: Success Respond
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "key": "q43j7sd_34#1ka."
 }
-#+END_QUOTE
+#+END_SRC
 
 *ERRORS:*
 #+CAPTION: Zle podany login lub haslo
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "error": 500,
    "message": "bad login or password"
 }
-#+END_QUOTE
+#+END_SRC
 **** Logout
 Usuwania klucza odbywa sie wedlug ¶cie¿ki /logoutJSON
 Client:
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "key": "sukabliatkey"
 }
-#+END_QUOTE
+#+END_SRC
 Serwer:
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "logout": "success"
 }
-#+END_QUOTE
+#+END_SRC
 *ERRORS:*
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "error": 500,
    "message": "bad login or password"
 }
-#+END_QUOTE
+#+END_SRC
 **** Container
 API do sterownia kontenerów odbywa sie po ¶cie¿ce /containers
 Client:
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "key": "sukabliatkey"
    "id" : "asfj923b5479fhrawe9xpfj2x4x"
    "function" : "start|stop|remove|reload|info"
 }
-#+END_QUOTE
+#+END_SRC
 Serwer:
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "message": "success"
 }
-#+END_QUOTE
+#+END_SRC
 gdy *"function"* równa sie *"info"*
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "key": "sukabliatkey"
    "container": {
@@ -175,32 +175,32 @@ gdy *"function"* równa sie *"info"*
         "status" : "UP"
     }
 }
-#+END_QUOTE
+#+END_SRC
 *ERRORS:*
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "error": 500,
    "message": "bad validataion request"
 }
-#+END_QUOTE
+#+END_SRC
 **** Containers
 API do sterownia kontenerów odbywa sie po ¶cie¿ce /containers
 Client:
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "key": "sukabliatkey"
    "type" : "containers"
    "function" : "startall|stopall|removeall|reloadall|list"
 }
-#+END_QUOTE
+#+END_SRC
 Serwer:
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "message": "success"
 }
-#+END_QUOTE
+#+END_SRC
 gdy *"function"* równa sie *"list"*
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "key": "sukabliatkey"
    "containers": [{
@@ -237,32 +237,32 @@ gdy *"function"* równa sie *"list"*
         "status" : "STOPED"
     }]
 }
-#+END_QUOTE
+#+END_SRC
 *ERRORS:*
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "error": 500,
    "message": "bad validataion request"
 }
-#+END_QUOTE
+#+END_SRC
 **** Image
 API do sterownia kontenerów odbywa sie po ¶cie¿ce /image
 Client:
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "key": "sukabliatkey",
    "id" : "asfj923b5479fhrawe9xpfj2x4x",
    "function" : "start|stop|remove|reload|info"
 }
-#+END_QUOTE
+#+END_SRC
 Serwer:
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "message": "success"
 }
-#+END_QUOTE
+#+END_SRC
 gdy *"function"* równa sie *"get"*
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "key": "sukabliatkey",
    "images": {
@@ -271,32 +271,32 @@ gdy *"function"* równa sie *"get"*
         "version": "latest"
     }
 }
-#+END_QUOTE
+#+END_SRC
 *ERRORS:*
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "error": 500,
    "message": "bad validataion request"
 }
-#+END_QUOTE
+#+END_SRC
 **** Images
 API do sterownia kontenerów odbywa sie po ¶cie¿ce /images
 Client:
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "key": "sukabliatkey",
    "type" : "images",
    "function" : "deleteall|list"
 }
-#+END_QUOTE
+#+END_SRC
 Serwer:
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "message": "success"
 }
-#+END_QUOTE
+#+END_SRC
 gdy *"function"* równa sie *"list"*
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "key": "sukabliatkey"
    "images": [ {
@@ -313,14 +313,14 @@ gdy *"function"* równa sie *"list"*
         "version": "3.4"
     }]
 }
-#+END_QUOTE
+#+END_SRC
 *ERRORS:*
-#+BEGIN_QUOTE
+#+BEGIN_SRC
 {
    "error": 500,
    "message": "bad validataion request"
 }
-#+END_QUOTE
+#+END_SRC
 
 ** TODO HTML Specyfikacja 
 *** TODO Routing 
