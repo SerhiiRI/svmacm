@@ -124,7 +124,7 @@ def JSONMessage(keyvalue:list):
     d = dict()
     for k, v in keyvalue:
         d[str(k)] = v
-    return json.dumps(d)
+    return d
 
 
 def JSONSaveUserList(key, userList:list):

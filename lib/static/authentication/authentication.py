@@ -1,9 +1,9 @@
 from functools import wraps
 from flask import Flask, request, Response
 from lib.formats.jsons import \
-    JSONVerifiedUser , \
-    JSONSaveUserList , \
-    JSONError
+    JSONVerifiedUser, \
+    JSONSaveUserList, \
+    JSONError, JSONKey
 import random
 import json
 import pprint
@@ -63,10 +63,10 @@ def authenticate(f):
     @wraps(f)
     def decorator(*args, **kwargs):
         p.pprint(__user_id)
-        print("=> Login ",end='')
+        print(" => Login ",end='')
 
         if(request.content_type == "application/json"):
-            print("=> JSON", end='')
+            print(" => JSON ", end='')
             dictionary = request.get_json()
             if "key" in dictionary:
                 print(" => key {}".format(dictionary["key"]), end='')
@@ -80,7 +80,10 @@ def authenticate(f):
                 key = __verify_login(dictionary["login"], dictionary["password"])
                 if(key):
                     print(" => key is verified {} ".format(key), end='')
-                    return f(key)
+                    resp = Response(JSONKey(key))
+                    resp.content_type = "application/json"
+                    return resp
+
             print('____________________________________/')
             return f(None)
 
