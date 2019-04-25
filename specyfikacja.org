@@ -1,45 +1,45 @@
-(setq system-time-locale "C")
+
 * *UWAGI* 
 
-  Lista uwag, odno∂nie czytania tego pliku:
-  - Dany tekst zawiera mnÛstwo bl°dÛw jIenzykowych.
+  Lista uwag, odno≈õnie czytania tego pliku:
+  - Dany tekst zawiera mn√≥stwo blƒÑd√≥w jIenzykowych.
   - Dany tekst nie jest polecany dla czytania polakam z problemami serca. 
-  - Dany tekst zawiera kilkarazowe uøywania s≥owa "chmÛra", napisanego przez ” kreskowane.
+  - Dany tekst zawiera kilkarazowe u≈ºywania s≈Çowa "chm√≥ra", napisanego przez √ì kreskowane.
 
 * *Standart* for *SVMACM* 
 
-  Ten plik okre∂lia w jaki sposob odbywa siÍ komunikacja pomiÍdzy klientem a serverem sterowania *SVMACM*. Plik zaweiera ∂cis≥± specyfikacje odno∂nie kontstruowania aplikacji, jej czÍ∂ci rutingowej. 
+  Ten plik okre≈õlia w jaki sposob odbywa siƒô komunikacja pomiƒôdzy klientem a serverem sterowania *SVMACM*. Plik zaweiera ≈õcis≈ÇƒÖ specyfikacje odno≈õnie kontstruowania aplikacji, jej czƒô≈õci rutingowej. 
 
 * Kontent
-** TODO g≥Ûwny plik *main.py*
+** TODO g≈Ç√≥wny plik *main.py*
 ** Blueprint realizacja
- BluePrint - jest abstrakcja wewnÍtrzna framework-u flaks. BluePrint pozwala odseparowaÊ logikÍ programowania kodu, nie agreguj±c go w jednym pliku. Zamiast 
- rejestracji ∂ciÍøki i funkcji ktÛra jest wykonywana w g≥Ûwnym pliku *main.py* korzystamy z blueprintÛw. Przyklad BEZ blueprintÛw:
+ BluePrint - jest abstrakcja wewnƒôtrzna framework-u flaks. BluePrint pozwala odseparowaƒá logikƒô programowania kodu, nie agregujƒÖc go w jednym pliku. Zamiast 
+ rejestracji ≈õciƒô≈ºki i funkcji kt√≥ra jest wykonywana w g≈Ç√≥wnym pliku *main.py* korzystamy z blueprint√≥w. Przyklad BEZ blueprint√≥w:
 #+BEGIN_SRC python
 
 app = new Flask(__name__)
 
 @app.route('/', methods=["POST", "GET"])
-def funkcjaObs≥ugiØ±dania(key="12341"):
+def funkcjaObs≈Çugi≈ªƒÖdania(key="12341"):
     if(request.content_type == "application/json"):
        return ....
     ...
 
 @app.route('/logout', methods=["GET"])
-def funkcjaObs≥ugiØ±dania(key="12341"):
+def funkcjaObs≈Çugi≈ªƒÖdania(key="12341"):
     if(request.content_type == "application/json"):
        return ....
     ...
 #+END_SRC
 
- Za pomocy blueprint-a okre∂liamy caly podmodÛl rutingowy, w ktÛrym zanaczamy ∂ciÍøki dotyÊz±ce tego modulu i funkcji, wywolywanych przy zaznaczonym rz±daniu.
- Tworz±Ê jeden bluepirnt w projekcie o ∂ciÍøce projektwoje "//src/blueprint/renderMain.py//":
+ Za pomocy blueprint-a okre≈õliamy caly podmod√≥l rutingowy, w kt√≥rym zanaczamy ≈õciƒô≈ºki dotyƒázƒÖce tego modulu i funkcji, wywolywanych przy zaznaczonym rzƒÖdaniu.
+ TworzƒÖƒá jeden bluepirnt w projekcie o ≈õciƒô≈ºce projektwoje "//src/blueprint/renderMain.py//":
 
 #+BEGIN_SRC python
 renderMain = Blueprint(name='renderMain',import_name=__name__)
 
 @renderMain.route('/', methods=["POST", "GET"])
-def funkcjaObs≥ugiØ±dania(key="12341"):
+def funkcjaObs≈Çugi≈ªƒÖdania(key="12341"):
     if(request.content_type == "application/json"):
        return ....
     ...
@@ -51,15 +51,15 @@ I odpowiednio drugi dla wylogownaia twrorzymy w pliku "//src/blueprint/renderMai
 renderLogout = Blueprint(name='renderMain',import_name=__name__)
 
 @renderLogout.route('/logoutJSON', methods=["POST"])
-def funkcjaObs≥ugiØ±dania():
+def funkcjaObs≈Çugi≈ªƒÖdania():
     ...
 
 @renderLogout.route('/logoutHTML', methods=["GET"])
-def funkcjaObs≥ugiØ±dania():
+def funkcjaObs≈Çugi≈ªƒÖdania():
     ...
 #+END_SRC
- Przez takie podej∂cie pojawia sie opcja okre∂lenia specjalnych parametrÛw dla danego modulu, oraz odseparowania logiki, dla kaødej zestawu ∂cieøek. 
-Przy tym wyg≥±d pliku g≥Ûwnego teø sie zmienia. WYkonujemy tak zwan± /rejestracje/ /Blueprinta/ wewn±trz g≥Ûwnego pliku flask aplikacji *main.py*:
+ Przez takie podej≈õcie pojawia sie opcja okre≈õlenia specjalnych parametr√≥w dla danego modulu, oraz odseparowania logiki, dla ka≈ºdej zestawu ≈õcie≈ºek. 
+Przy tym wyg≈ÇƒÖd pliku g≈Ç√≥wnego te≈º sie zmienia. WYkonujemy tak zwanƒÖ /rejestracje/ /Blueprinta/ wewnƒÖtrz g≈Ç√≥wnego pliku flask aplikacji *main.py*:
 
 #+BEGIN_SRC python
 app = Flask(__name__)
@@ -71,35 +71,35 @@ app.run("127.0.0.1", 80, debug=True)
 #+END_SRC
 ** TODO JSON Specyfikacja
 *** Routing
-    Kaøda z ∂cieøek posiada tak zwany Blueprint po stronie flasku, ktÛry obejmuje zestaw ∂cieøek rutingowych oraz zestaw funkcyj dla reakcji na odpowiednio wyslany zestaw informacji wedlug procedury [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][POST]] ( Postem da sie przesylaÊ informacje ). poniewaø serwer korzysta z wspÛlnych ∂cieøek, kaødy Blueprint zawiera if, ktÛry rozrÛºnia ø±dania dla JSON a HTML sprawdzeniam parametera [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][content-type]]  nag≥Ûwka HTTP, i czy on posiada warto∂Ê *application\json*. 
- Dla wspÛlnych ∂cieøek ø±dania, tak zwany ~Blueprint~ ma podobn± reakcje. 
+    Ka≈ºda z ≈õcie≈ºek posiada tak zwany Blueprint po stronie flasku, kt√≥ry obejmuje zestaw ≈õcie≈ºek rutingowych oraz zestaw funkcyj dla reakcji na odpowiednio wyslany zestaw informacji wedlug procedury [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][POST]] ( Postem da sie przesylaƒá informacje ). poniewa≈º serwer korzysta z wsp√≥lnych ≈õcie≈ºek, ka≈ºdy Blueprint zawiera if, kt√≥ry rozr√≥≈∫nia ≈ºƒÖdania dla JSON a HTML sprawdzeniam parametera [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][content-type]]  nag≈Ç√≥wka HTTP, i czy on posiada warto≈õƒá *application\json*. 
+ Dla wsp√≥lnych ≈õcie≈ºek ≈ºƒÖdania, tak zwany ~Blueprint~ ma podobnƒÖ reakcje. 
 
 #+BEGIN_QUOTE
 1. request to /containers
 2. (requestOBJ.content_type == "application/json")
-   -> TRUE : zwrÛÊ strone z zawartym w ∂riodku JSON-em
-   -> FALSE: domy∂lna konfiguracja zwraca HTML
+   -> TRUE : zwr√≥ƒá strone z zawartym w ≈õriodku JSON-em
+   -> FALSE: domy≈õlna konfiguracja zwraca HTML
 #+END_QUOTE
 
 #+CAPTION: JSON routing path
-| ∂cieøka     | opis                                               |
+| ≈õcie≈ºka     | opis                                               |
 |-------------+----------------------------------------------------|
-| //          | ∂cieøka dla otrzymania dokumentacji po API         |
-| /containers | wy∂wietlania oraz manipulacja contenerami          |
-| /images     | informacji o obrazach i moøliwo∂ci sterowania nimi |
-| /logoutJSON | usuwania kluczu sesji uøytkownika                  |
+| //          | ≈õcie≈ºka dla otrzymania dokumentacji po API         |
+| /containers | wy≈õwietlania oraz manipulacja contenerami          |
+| /images     | informacji o obrazach i mo≈ºliwo≈õci sterowania nimi |
+| /logoutJSON | usuwania kluczu sesji u≈ºytkownika                  |
 *** JSON Hundling Spec (JHS)
 **** Wyznaczenia:
-     *key* - klucz wedlug ktÛrego bÍdzie sie odbywala indentyfikacja uøytkownika. Klucz wysylany przy kaødym rz±dnaniu 
+     *key* - klucz wedlug kt√≥rego bƒôdzie sie odbywala indentyfikacja u≈ºytkownika. Klucz wysylany przy ka≈ºdym rzƒÖdnaniu 
 **** Login
-Ø±danie od uøytkownika, z pro∂bi± o logowaniu:
+≈ªƒÖdanie od u≈ºytkownika, z pro≈õbiƒÖ o logowaniu:
 #+BEGIN_SRC
 {
    "login"   : "admin"
    "password": "admin"
 }
 #+END_SRC
-Serwer zwraca klucz dostÍpu do API
+Serwer zwraca klucz dostƒôpu do API
 - Zle podany login i haslo
 #+CAPTION: Success Respond
 #+BEGIN_SRC
@@ -117,7 +117,7 @@ Serwer zwraca klucz dostÍpu do API
 }
 #+END_SRC
 **** Logout
-Usuwania klucza odbywa sie wedlug ∂cieøki /logoutJSON
+Usuwania klucza odbywa sie wedlug ≈õcie≈ºki /logoutJSON
 Client:
 #+BEGIN_SRC
 {
@@ -138,7 +138,7 @@ Serwer:
 }
 #+END_SRC
 **** Container
-API do sterownia kontenerÛw odbywa sie po ∂cieøce /containers
+API do sterownia kontener√≥w odbywa sie po ≈õcie≈ºce /containers
 Client:
 #+BEGIN_SRC
 {
@@ -153,7 +153,7 @@ Serwer:
    "message": "success"
 }
 #+END_SRC
-gdy *"function"* rÛwna sie *"info"*
+gdy *"function"* r√≥wna sie *"info"*
 #+BEGIN_SRC
 {
    "key": "sukabliatkey"
@@ -184,7 +184,7 @@ gdy *"function"* rÛwna sie *"info"*
 }
 #+END_SRC
 **** Containers
-API do sterownia kontenerÛw odbywa sie po ∂cieøce /containers
+API do sterownia kontener√≥w odbywa sie po ≈õcie≈ºce /containers
 Client:
 #+BEGIN_SRC
 {
@@ -199,7 +199,7 @@ Serwer:
    "message": "success"
 }
 #+END_SRC
-gdy *"function"* rÛwna sie *"list"*
+gdy *"function"* r√≥wna sie *"list"*
 #+BEGIN_SRC
 {
    "key": "sukabliatkey"
@@ -246,7 +246,7 @@ gdy *"function"* rÛwna sie *"list"*
 }
 #+END_SRC
 **** Image
-API do sterownia kontenerÛw odbywa sie po ∂cieøce /image
+API do sterownia kontener√≥w odbywa sie po ≈õcie≈ºce /image
 Client:
 #+BEGIN_SRC
 {
@@ -261,7 +261,7 @@ Serwer:
    "message": "success"
 }
 #+END_SRC
-gdy *"function"* rÛwna sie *"get"*
+gdy *"function"* r√≥wna sie *"get"*
 #+BEGIN_SRC
 {
    "key": "sukabliatkey",
@@ -280,7 +280,7 @@ gdy *"function"* rÛwna sie *"get"*
 }
 #+END_SRC
 **** Images
-API do sterownia kontenerÛw odbywa sie po ∂cieøce /images
+API do sterownia kontener√≥w odbywa sie po ≈õcie≈ºce /images
 Client:
 #+BEGIN_SRC
 {
@@ -295,7 +295,7 @@ Serwer:
    "message": "success"
 }
 #+END_SRC
-gdy *"function"* rÛwna sie *"list"*
+gdy *"function"* r√≥wna sie *"list"*
 #+BEGIN_SRC
 {
    "key": "sukabliatkey"
@@ -324,14 +324,14 @@ gdy *"function"* rÛwna sie *"list"*
 
 ** TODO HTML Specyfikacja 
 *** TODO Routing 
-    Kaøda z ∂cieøek posiada tak zwany Blueprint po stronie flasku, ktÛry obejmuje zestaw ∂cieøek rutingowych oraz zestaw funkcyj dla reakcji na odpowiednio wyslany zestaw informacji wedlug procedury [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][GET]]. Poniewaø serwer korzysta z wspÛlnych ∂cieøek, kaødy Blueprint zawiera if, ktÛry rozrÛºnia ø±dania dla JSON a HTML sprawdzeniam parametera [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][content-type]]  nag≥Ûwka HTTP, i czy on posiada warto∂Ê *application\json*. 
+    Ka≈ºda z ≈õcie≈ºek posiada tak zwany Blueprint po stronie flasku, kt√≥ry obejmuje zestaw ≈õcie≈ºek rutingowych oraz zestaw funkcyj dla reakcji na odpowiednio wyslany zestaw informacji wedlug procedury [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][GET]]. Poniewa≈º serwer korzysta z wsp√≥lnych ≈õcie≈ºek, ka≈ºdy Blueprint zawiera if, kt√≥ry rozr√≥≈∫nia ≈ºƒÖdania dla JSON a HTML sprawdzeniam parametera [[https://developer.mozilla.org/pl/docs/Web/HTTP/Headers][content-type]]  nag≈Ç√≥wka HTTP, i czy on posiada warto≈õƒá *application\json*. 
 
 #+CAPTION: JSON routing path
-| ∂cieøka     | opis                                               |
+| ≈õcie≈ºka     | opis                                               |
 |-------------+----------------------------------------------------|
-| //          | ∂cieøka dla otrzymania dokumentacji po API         |
-| /containers | wy∂wietlania oraz manipulacja contenerami          |
-| /images     | informacji o obrazach i moøliwo∂ci sterowania nimi |
-| /logoutHTML | usuwania kluczu sesji uøytkownika                  |
+| //          | ≈õcie≈ºka dla otrzymania dokumentacji po API         |
+| /containers | wy≈õwietlania oraz manipulacja contenerami          |
+| /images     | informacji o obrazach i mo≈ºliwo≈õci sterowania nimi |
+| /logoutHTML | usuwania kluczu sesji u≈ºytkownika                  |
 
 
