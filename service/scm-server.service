@@ -1,0 +1,12 @@
+[Unit]
+Description=Simple Containers Manager http serwer program, runs on 8777 port
+After=network.target docker.service
+Requires=scm-server.socket
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/etc/scm/scm.py
+
+[Install]
+WantedBy=multi-user.target
+
