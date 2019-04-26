@@ -9,7 +9,7 @@ from lib.static.authentication.encryption import \
     encode , \
     decode
 from multiprocessing import Pool
-from functools       import wraps
+from functools import wraps, reduce
 from flask           import json
 
 
@@ -139,3 +139,13 @@ def JSONVerifiedUser(key, login:str, password:str) -> bool:
             if (str(dic["login"]) == login and str(dic["password"]) == password):
                 return True
         return False
+
+def validation(request_template: dict, comparing_template: dict):
+    compare = lambda acc, key:\
+        acc and \
+        ((key in comparing_template) and
+        (type(request_template[key]) == type(comparing_template[key])))
+    return reduce(compare, request_template.keys())
+
+
+

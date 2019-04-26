@@ -102,7 +102,7 @@ Serwer zwraca klucz dostępu do API
 #+CAPTION: Success Respond
 #+BEGIN_SRC
 {
-   "key": "q43j7sd_34#1ka."
+   "key": "q43j7sd_34f1ka."
 }
 #+END_SRC
 

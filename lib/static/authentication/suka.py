@@ -1,13 +1,28 @@
 #!/usr/bin/python3
-import json
+from functools import reduce
+
+def validation(request_template: dict, comparing_template: dict):
+    def compare (acc, key):
+        print("Acum: {}, Key: {} | {} in template {} | equal Types {}".format(
+            acc, key, key, (key in comparing_template), type(request_template[key]) is type(comparing_template[key])
+        ))
+        return acc\
+               and ((key in comparing_template)
+                    and (type(request_template[key]) is type(comparing_template[key])))
+    return reduce(compare, request_template.keys())
 
 
-def addUser(userList:list):
-    userList = [dict({"login":log, "password":passwd}) for log, passwd in userList]
-    print(userList)
-    # with open("users.file", "w+") as authfile:
-    #     authfile.write(encode(key, (JSONUserTemplate("admin", "lala"))))
+a = dict()
+a["12"] = "a"
+a["!a"] = "a"
+a["!b"] = "a"
+a["!c"] = "a"
 
-# print("LOGIN:{}".format(str(verifiedUser(key, "admin", "lala"))))
-addUser((("a", "p"), ("d", "b"), ("k", "n")))
+b = dict()
+b["12"] = ","
+b["!a"] = "b"
+b["!b"] = "b"
+b["!c"] = []
 
+
+print("Validation is {}".format(validation(a, b)))

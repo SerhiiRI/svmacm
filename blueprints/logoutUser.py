@@ -1,5 +1,4 @@
-from flask import Blueprint, Flask, Response, abort
-from flask import json, request, render_template, make_response, redirect, url_for
+from flask import Blueprint, Response
 from lib.formats.jsons import JSONError, JSONMessage
 from lib.static.authentication.authentication import\
     clean_key , \
@@ -16,7 +15,6 @@ def logoutHTML(key):
     resp.mimetype = "plain/text"
     resp.status_code = 302
     resp.location = "/"
-
     if(key != None):
         resp.set_cookie("key", "", expires=0)
         clean_key(key)
