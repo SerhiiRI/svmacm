@@ -1,40 +1,55 @@
 from docker.errors import NotFound
-
+import docker
 
 class ImageController:
     """ Image controller """
-    def __init__(self, printing_function):
-        super(ImageController, self).__init__()
-        # _client = docker.from_env()
+    def __init__(self):
+        self._client = docker.from_env()
         self.__list = self._client.images.list()
-        self.__callbackOutFunction = printing_function
 
-    def argument_parser(self, ARG):
-        if (ARG.name == ""): return
-        if (ARG.run):self.run(ARG.name, False, True); return
-        if (ARG.delete):self.delete(ARG.name); return
-        if (ARG.list): self.list(); return
-        if (ARG.pull): self.pull(ARG.name)
-        self.__callbackBackAlert("no option selected")
-        return
+    def getByName(self, name):
+        try:
+            return self._client.images.get(name)
+        except NotFound:
+            return None
 
     def list(self):
         self.__list = self._client.images.list()
-        self.__callbackOutFunction(*self._client.images.list())
         return self.__list
 
     def run(self, image_name, auto_remove=False, detach=True):
-        print("run")
-        return self._client.containers.run(image_name, tty=True, auto_remove=False, detach=True)
+        container = False
+        try:
+            container =  self._client.containers.run(image_name, tty=True, auto_remove=auto_remove, detach=detach)
+        except docker.errors.APIError:
+            print("cannot create container by name {}".format(image_name))
+        return container
+
 
     def pull(self, repository, tag=None):
-        self._client.images.pull(repository, tag)
+        if(repository == ""):
+            return False
+        try:
+            self._client.images.pull(repository, tag)
+            return True
+        except docker.errors.NotFound:
+            print("Cannot pull")
+        return False
 
     def delete(self, image):
         try:
             self._client.images.remove(image)
-        except NotFound ("not found container by name"):
+            return True
+        except docker.errors.APIError ("not found container by name"):
             print("image by name <" + image + "> not found")
+        return False
+
+    def prune(self):
+        try:
+            return self._client.images.prune()
+        except docker.errors.APIError:
+            print("can not prune")
+        return False
 
     def __callbackBackAlert(self, message):
         print("[!] ALERT\n")

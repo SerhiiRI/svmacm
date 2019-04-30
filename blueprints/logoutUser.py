@@ -1,12 +1,20 @@
 from flask import Blueprint, Response
-from lib.formats.jsons import JSONError, JSONMessage
+
+from lib.formats.json_helpers import JSONValidation, RESP, JSON, JSONError
+from lib.formats.jsons import JSONUserTPLT
 from lib.static.authentication.authentication import\
     clean_key , \
     authenticate
 
 
-logoutUser = Blueprint(name='logoutTemplate', import_name=__name__)
+@RESP
+@JSON
+def JSONLogoutSuccess() -> dict:
+    return {
+        "logout" : "success"
+    }
 
+logoutUser = Blueprint(name='logoutTemplate', import_name=__name__)
 
 @logoutUser.route('/logoutHTML', methods=["GET"])
 @authenticate
@@ -22,14 +30,11 @@ def logoutHTML(key):
 
 
 @logoutUser.route('/logoutJSON', methods=["POST"])
+@JSONValidation(JSONUserTPLT["logout"])
 @authenticate
 def logoutJSON(key):
     if(key != None):
         clean_key(key)
-        resp = Response(JSONMessage([("logout", "afasd")]))
-        resp.content_type = "application/json"
-        return resp
-    resp = Response(JSONError(500, "bad request"))
-    resp.content_type = "application/json"
-    return resp
+        return JSONLogoutSuccess()
+    return JSONError(500, "not found user")
 

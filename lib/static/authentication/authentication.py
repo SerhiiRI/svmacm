@@ -1,9 +1,10 @@
 from functools import wraps
 from flask import Flask, request, Response
-from lib.formats.jsons import \
+from lib.formats.json_helpers import \
     JSONVerifiedUser, \
     JSONSaveUserList, \
-    JSONError, JSONKey
+    JSONError
+from lib.formats.jsons import JSONKey
 import random
 import json
 import pprint
@@ -22,14 +23,6 @@ def __error401_NotVarifyAccess():
     resp.content_type = "application/json"
     FlaskSerwer.process_response(resp)
     return resp
-
-
-def __error401_NotCorrectLogin():
-    resp = Response(JSONError(401, "Login are not correct"))
-    resp.content_type = "application/json"
-    FlaskSerwer.process_response(resp)
-    return resp
-
 
 def __verify_key(key):
     for log, ukey in __user_id.items():
@@ -74,18 +67,19 @@ def authenticate(f):
                 if key:
                     print(" => key is verified ", end='')
                     return f(key)
+                else:
+                    return JSONError(300, "key does not exist")
 
             if "login" in dictionary and "password" in dictionary:
                 print(dictionary["login"], dictionary["password"], end='')
                 key = __verify_login(dictionary["login"], dictionary["password"])
                 if(key):
                     print(" => key is verified {} ".format(key), end='')
-                    resp = Response(JSONKey(key))
-                    resp.content_type = "application/json"
-                    return resp
+                    return JSONKey(key)
+                else:
+                    return JSONError(300, "wrong login or password")
 
-            print('____________________________________/')
-            return f(None)
+            return JSONError(0, "API ERROR " + __name__)
 
         else:
             print(" => HTML", end='')

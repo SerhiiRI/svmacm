@@ -1,9 +1,52 @@
-from flask import Blueprint, Flask, Response, abort
-from flask import json, request, render_template, make_response
-from lib.static.authentication.authentication import authenticate
-from lib.formats.jsons import JSONError
+from flask import Blueprint
+from flask import request, render_template, make_response
 
-#flask = Flask(__name__)
+from lib.formats.json_helpers import JSONValidation
+from lib.static.authentication.authentication import authenticate
+from lib.formats.jsons import JSONUserTPLT
+from lib.formats.json_helpers import \
+    JSON, \
+    RESP, JSONError
+
+
+# > JSONxxxx - lista funkcyj związana
+# z szablonami odpowiedzi dla JSON-typu
+# danych
+@RESP
+@JSON
+def JSONKey(
+        key:str
+    ) -> dict:
+    return {
+        "key" : key
+    }
+
+@RESP
+@JSON
+def JSONGetMainPage(route:bool=None, key:str=None) -> dict:
+    pathDICT = lambda path, desc: {"route": path, "describe": desc}
+    MainDictionary = {
+        "title": "SCM",
+        "about": "Server kontroli systemu wirtualizacji docker, korzystując z abstrakcji sterowania, zorganizowanej w podstaowych mechanizmach Docker API",
+        "author": "Marcin Ochocinski",
+        "poweredBy":"Serioża",
+        }
+    if (route):
+        MainDictionary["routes"] = [
+            pathDICT("/", "plain text about program and some of information"),
+            pathDICT("/containers", "JSON containers manipulation route"),
+            pathDICT("/images", "JSON images manipulation route"),
+            pathDICT("/logoutJSON", "logout path")
+        ]
+    if (key):
+        MainDictionary["key"] = key
+    return MainDictionary
+
+
+
+# > renderMain - główny blueprint
+# odpowiedzialny za generacje strony
+# tytulowej. Ona zawiera dokumentacje
 
 renderMain = Blueprint(name           ='renderMain',
                        import_name    =__name__    ,
@@ -11,37 +54,11 @@ renderMain = Blueprint(name           ='renderMain',
 
 
 @renderMain.route('/', methods=["POST", "GET"])
+@JSONValidation(JSONUserTPLT["login_login"], JSONUserTPLT["login_key"])
 @authenticate
-def svmacm(key="12341"):
+def svmacm(key=None):
     if(request.content_type == "application/json"):
-        if(key):
-            backValue = json.dumps({
-            "key": key,
-            "containers" : [{
-                "type": "container",
-                "name": "temp",
-                "id" : 123321,
-                "network" : {
-                    "received" : 1332321,
-                    "transceived" : 111111,
-                    "unit" : "MB"
-                },
-                "cpu": 1,
-                "ram": 12,
-                "image": {
-                    "name" : "fedora",
-                    "version": "version"
-                    },
-                "status" : "ACTIVE"
-            }]})
-            resp = Response(backValue)
-            resp.content_type = "application/json"
-        else:
-            backValue = JSONError(300, "not correct login")
-            resp = Response(backValue)
-            resp.content_type = "application/json"
-        print("*****MAIN******")
-        return resp
+        return JSONGetMainPage() if key == None else JSONGetMainPage(route=True, key=key)
     else:
         print(request.method, request.content_type, request.method == "GET")
         if (key != None):
@@ -50,3 +67,4 @@ def svmacm(key="12341"):
             return resp
     resp = make_response(render_template("index.html", type="user"))
     return resp
+
