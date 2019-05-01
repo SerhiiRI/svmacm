@@ -246,10 +246,20 @@ ERRORS:
 **** Image
 API do sterownia kontenerów odbywa sie po ścieżce /image
 Client:
+przy wywolaniu polecenia pull, z reposytoria będzie ściągnięnty wylącznie obraz o wersji "latest"
 #+BEGIN_SRC
 {
    "key": "sukabliatkey",
    "image" : "fedora",
+   "function" : "pull|run|delete|get"
+}
+#+END_SRC
+dla wybierania specyfikacji polecano wykorzystywać tag - 'latest', przy podanym 'all', ściąga wszystkie kontery dotyczące programu
+#+BEGIN_SRC
+{
+   "key": "sukabliatkey",
+   "image" : "fedora",
+   "tag" : "latest|3.4|all",
    "function" : "pull|run|delete|get"
 }
 #+END_SRC
