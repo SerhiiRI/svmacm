@@ -294,7 +294,7 @@ Client:
 {
    "key": "sukabliatkey",
    "type" : "images",
-   "function" : "deleteall|list"
+   "function" : "deleteall|prune|list"
 }
 #+END_SRC
 Serwer:
