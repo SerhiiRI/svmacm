@@ -3,7 +3,7 @@ from flask import request, render_template, make_response
 
 from lib.formats.json_helpers import JSONValidation
 from lib.static.authentication.authentication import authenticate
-from lib.formats.jsons import JSONUserTPLT
+from lib.formats.jsons import JSONUserTPLT, GetHelp
 from lib.formats.json_helpers import \
     JSON, \
     RESP, JSONError
@@ -58,7 +58,7 @@ renderMain = Blueprint(name           ='renderMain',
 @authenticate
 def svmacm(key=None):
     if(request.content_type == "application/json"):
-        return JSONGetMainPage() if key == None else JSONGetMainPage(route=True, key=key)
+        return JSONGetMainPage() if key == None else GetHelp()
     else:
         print(request.method, request.content_type, request.method == "GET")
         if (key != None):

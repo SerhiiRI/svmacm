@@ -26,7 +26,7 @@ class ImageController:
         return container
 
 
-    def pull(self, repository, tag=None):
+    def pull(self, repository, tag="latest"):
         if(repository == ""):
             return False
         try:
@@ -43,6 +43,19 @@ class ImageController:
         except docker.errors.APIError ("not found container by name"):
             print("image by name <" + image + "> not found")
         return False
+
+    def delete_all(self):
+        imagelist = self._client.images.list()
+        for image in imagelist:
+            try:
+                for version in image.tags:
+                    try:
+                        self._client.images.remove(version, force=True)
+                    except docker.errors.APIError ("images list crush"):
+                        print("cannot delete images")
+            except NotFound:
+                print("version not found")
+        return True
 
     def prune(self):
         try:

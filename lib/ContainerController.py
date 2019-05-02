@@ -10,9 +10,12 @@ class ContainerController:
         self.__list = self._client.containers.list()
 
 
-    def list(self):
+    def list(self, filter=""):
         try:
-            containers = (self._client.containers.list(all=True))
+            if(filter in ["restarting", "running", "paused", "exited"]):
+                containers = (self._client.containers.list(all=True, filters={"status": filter}))
+            else:
+                containers = (self._client.containers.list(all=True))
             return containers
         except docker.errors.APIError:
             print("API ERROR")
@@ -95,7 +98,12 @@ class ContainerController:
         return True
 
     def stop_all_containers(self):
-        for container in self.list():
+        for container in self.list(filter="running"):
+            try:
+                container.stop()
+            except docker.errors.APIError:
+                print("stop container error")
+        for container in self.list(filter="restarting"):
             try:
                 container.stop()
             except docker.errors.APIError:
@@ -103,7 +111,12 @@ class ContainerController:
         return True
 
     def start_all_containers(self):
-        for container in self.list():
+        for container in self.list(filter="exited"):
+            try:
+                container.start()
+            except docker.errors.APIError:
+                print("start container error")
+        for container in self.list(filter="paused"):
             try:
                 container.start()
             except docker.errors.APIError:

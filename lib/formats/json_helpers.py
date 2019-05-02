@@ -63,7 +63,6 @@ def JSONValidation(*templates):
     def infuntionWraper(f):
         @wraps(f)
         def decorator(*args, **kwargs):
-            print("--------------> START VALIDATOR <------------")
             if request.is_json == True:
                 if reduce(
                         (lambda acc, valid: acc or _JSONvalidation(request.get_json(), valid))
@@ -72,9 +71,25 @@ def JSONValidation(*templates):
                     return f(*args, **kwargs)
                 else:
                     return JSONError(500, "User Json Validation ERROR")
-                    print("--------------> VALIDATOR ERROR <------------")
             else:
                 return f(*args, **kwargs)
-
         return decorator
     return infuntionWraper
+
+
+# def JSONValidHelp(help_defined_json):
+#     def infuntionWraper(f):
+#         @wraps(f)
+#         def decorator(*args, **kwargs):
+#             if request.is_json == True:
+#                 request_dict = request.get_json().keys()
+#                 if len(request_dict) == 1:
+#                     return help_defined_json
+#                 else:
+#                     return f(*args, **kwargs)
+#             else:
+#                 return f(*args, **kwargs)
+#         return decorator
+#     return infuntionWraper
+#
+

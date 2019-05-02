@@ -15,7 +15,10 @@ from lib.formats.json_helpers import JSONValidation
 from lib.static.authentication.authentication import authenticate
 from lib.formats.json_helpers import JSON, RESP, JSONError
 from lib.formats.jsons import \
-    JSONUserTPLT, JSONSuccess, JSONMessage
+    JSONUserTPLT, \
+    JSONSuccess, \
+    JSONMessage, \
+    GetHelp
 
 
 @RESP
@@ -25,28 +28,53 @@ def JSONContainers(
 ) -> list:
     def getJSONContainerTemplate(container):
         STATDICT = container.stats(stream=False)
-        receive, transceive = networkUsage(STATDICT, 'MB')
-        name, container_id = containerNameId(STATDICT)
-        cpu = cpuPercentUsage(STATDICT)
-        memory = memoryRAM(STATDICT)
         image, version = imageNameTag(container)
         status = containerStatus(container)
-        unit = "KB"
-        return JSONContainersTemplate(
-            name=name,
-            container_id=container_id,
-            receive=receive,
-            transceive=transceive,
-            unit=unit,
-            cpu=cpu,
-            memory=memory,
-            image=image,
-            version=version,
-            status=status
-        )
+        name, container_id = containerNameId(STATDICT)
+        if(status=="running"):
+            receive, transceive = networkUsage(STATDICT, 'MB')
+            cpu = cpuPercentUsage(STATDICT)
+            memory = memoryRAM(STATDICT)
+            unit = "KB"
+            return JSONContainersTemplate(
+                    name=name,
+                    container_id=container_id,
+                    receive=receive,
+                    transceive=transceive,
+                    unit=unit,
+                    cpu=cpu,
+                    memory=memory,
+                    image=image,
+                    version=version,
+                    status=status
+                )
+        else:
+            return JSONContainersTemplateMinimize(
+                name=name,
+                container_id=container_id,
+                image=image,
+                version=version,
+                status=status
+            )
     return list(map(getJSONContainerTemplate, containers))
 
 
+def JSONContainersTemplateMinimize(
+        name="-",
+        container_id=0,
+        image="-",
+        version="-",
+        status="not exist") -> dict:
+    return {
+        "type": "container",
+        "name": name,
+        "id": container_id,
+        "image": {
+            "name": image,
+            "version": version
+        },
+        "status": status
+    }
 
 def JSONContainersTemplate(
         name="-",
@@ -85,11 +113,14 @@ containerRoute = Blueprint(name           ='containers',
 
 
 @containerRoute.route('/containers', methods=["POST", "GET"])
-@JSONValidation(JSONUserTPLT["container"], JSONUserTPLT["containers"])
+@JSONValidation(JSONUserTPLT["login_key"], JSONUserTPLT["container"], JSONUserTPLT["containers"])
 @authenticate
 def getImages(key=None):
     if(request.content_type == "application/json"):
-        return getJsonResponce(request.get_json())
+        request_data_dictionary = request.get_json()
+        if len(request_data_dictionary.keys()) == 1 and "key" in request_data_dictionary:
+            return GetHelp("/containers")
+        return getJsonResponce(request_data_dictionary)
     else:
         print(request.method, request.content_type, request.method == "GET")
         if (key != None):
@@ -113,9 +144,9 @@ def getJsonResponce(request_data:dict):
         if (function == "remove"):
             return JSONSuccess() if __Container_Controller.delete(request_data["id"]) else JSONError(500, "Container remove error ")
         if (function == "info"):
-            Container = __Container_Controller.run(request_data["container"])
+            Container = __Container_Controller.get(request_data["id"])
             if (Container):
-                return JSONContainers(list(Container))
+                return JSONContainers([Container])
             else:
                 return JSONError(500, "bad container ID")
         return JSONError(1, "None defined function")
@@ -132,7 +163,7 @@ def getJsonResponce(request_data:dict):
             if(len(Containers) > 0):
                 return JSONContainers(Containers)
             elif len(Containers) == 0 :
-                return JSONMessage([("containers", "[]ш")])
+                return JSONMessage([("containers", "[]")])
             else:
                 return JSONError(500, "Container API crash")
     return JSONError(0, "None defined request")
