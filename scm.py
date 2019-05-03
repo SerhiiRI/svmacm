@@ -178,7 +178,10 @@ scm.register_blueprint(containerRoute)
 # cntr.prune_container()
 
 
+import socket, errno
 
-scm.run(debug=True, host="0.0.0.0", port=80)
-# httpserver = WSGIServer(('0.0.0.0', 80), scm)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+scm.run(debug=True, host="0.0.0.0", port=8777)
+# httpserver = WSGIServer(('0.0.0.0', 8777), scm)
 # httpserver.serve_forever()

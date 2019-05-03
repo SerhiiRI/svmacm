@@ -42,8 +42,6 @@ def JSONGetMainPage(route:bool=None, key:str=None) -> dict:
         MainDictionary["key"] = key
     return MainDictionary
 
-
-
 # > renderMain - główny blueprint
 # odpowiedzialny za generacje strony
 # tytulowej. Ona zawiera dokumentacje

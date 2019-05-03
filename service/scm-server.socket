@@ -1,9 +1,0 @@
-[Unit]
-Description=Simple Containers Manager sockets
-PartOf=scm-server.service
-
-[Socket]
-ListenStream=127.0.0.1:8777
-
-[Install]
-WantedBy=sockets.targte

@@ -6,11 +6,11 @@ try:
     s.bind(("127.0.0.1", 8777))
 except socket.error as e:
     if e.errno == errno.EADDRINUSE:
-        print("port is used by other program")
-    else:
-        print(e)
-
-print("[+] Port is active")        
+        s.close()
+        print(1)
+        exit()
 s.close()
+print(0)
+
 
 

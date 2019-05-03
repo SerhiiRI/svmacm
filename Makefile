@@ -1,158 +1,98 @@
-.PHONY: clean-pyc clean-build docs clean
-
-BROWSER := python -c "$$BROWSER_PYSCRIPT"
-
-
+SHELL := /bin/bash
 python	= /usr/bin/python3
-
-
-help:
-	@echo "clean - remove all build, test, coverage and Python artifacts"
-	@echo "clean-build - remove build artifacts"
-	@echo "clean-pyc - remove Python file artifacts"
-	@echo "clean-test - remove test and coverage artifacts"
-	@echo "lint - check style with flake8"
-	@echo "test - run tests quickly with the default Python"
-	@echo "test-all - run tests on every Python version with tox"
-	@echo "coverage - check code coverage quickly with the default Python"
-	@echo "docs - generate Sphinx HTML documentation, including API docs"
-	@echo "release - package and upload a release"
-	@echo "dist - package"
-	@echo "install - install the package to the active Python's site-packages"
-
-clean: clean-build clean-pyc clean-test
-
-install:
-	rm -fr build/
-	rm -fr dist/
-	rm -fr .eggs/
-	find . -name '*.egg-info' -exec rm -fr {} +
-	find . -name '*.egg' -exec rm -f {} +
-
-clean-pyc:
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*.pyo' -exec rm -f {} +
-	find . -name '*~' -exec rm -f {} +
-	find . -name '__pycache__' -exec rm -fr {} +
-
-clean-test:
-	rm -fr .tox/
-	rm -f .coverage
-	rm -fr htmlcov/
-
-lint:
-	flake8 leviathan_serving tests
-
-test:
-	python setup.py test
-
-test-all:
-	tox
-
-coverage:
-	coverage run --source leviathan_serving setup.py test
-	coverage report -m
-	coverage html
-	$(BROWSER) htmlcov/index.html
-
-docs:
-	rm -f docs/leviathan_serving.rst
-	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ leviathan_serving
-	$(MAKE) -C docs clean
-	$(MAKE) -C docs html
-	$(BROWSER) docs/_build/html/index.html
-
-servedocs: docs
-	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
-
-release: clean
-	python setup.py sdist upload
-	python setup.py bdist_wheel upload
-
+SCM_SERVICE_NAME = scm-server.service
 REPO_SCM_DIRECTORY = $(shell pwd)
 REPO_SCM_SERVICE_PATH = $(shell pwd)/service/
-
-SCM_SERVICE_NAME = scm-server.service
-SCM_SOCKET_NAME = scm-server.socket
-
 DIR_LINUX_PROGRAM_LOCATION = /usr/local/etc/scm/
 DIR_LINUX_SYSTEMD_PATH = /etc/systemd/system/
-
 SCM_SYSTEMD_SERVICE_PATH = $(DIR_LINUX_SYSTEMD_PATH)$(SCM_SERVICE_NAME)
 
-install: clean
-	@if [ "$(id -u)" != "0" ]; then 
-	@echo "This script must be run as root" 1>&2 
-	@exit 1 
-	@fi
-	@if [ ! -f  ];
-	cp $(REPO_SCM_SERVICE_PATH)$(SCM_SERVICE_NAME) $(SCM_SYSTEMD_SERVICE_PATH)
-	cp $(REPO_SCM_SERVICE_PATH)$(SCM_SOCKET_NAME) $(SCM_SYSTEMD_SERVICE_PATH)
-	cp -avr $(SCM_DIRECTORY)* $(DIR_LINUX_PROGRAM_LOCATION)
-	@systemctl enable $(SCM_SERVICE_NAME)
-	@systemctl start $(SCM_SERVICE_NAME)
+# COLORS
+CYAN=\033[96m\033[1m
+GREEN=\033[32m\033[1m
+RED=\033[31m\033[1m
+NC=\033[0m
+BOLD = \033[1m
 
-
-python setup.py install
-
-config:
+help:
+	@echo "Name:"
+	@echo -e "\t${GREEN}Simple Container Manager(SCM)${NC}"
+	@echo -e "\nDescribe:"
+	@echo -e "\tSCM is a simple program to monitoring and control\n\tdocker virutal machines and images which can\n\twork with JSON api or web grafical interface"
+	@echo -e "\nCommands:"
+	@echo -e "\tinstall\t- install program and run on port 8777"
+	@echo -e "\trunloc\t- just up the server on port 8777"
+	@echo -e "\tkill\t- kill server matherfucka"
+	@echo -e "\tremove\t- remove all files"
+	@echo -e "\thelp\t- print this message"
 
 remove:
+	@if [ $(shell id -u) -ne 0 ]; then \
+	echo -e "[${RED}Error${NC}] This script must be run as root" 1>&2; \
+	exit 1; \
+	fi;
 
-run-local:
-
-
-OBJFILES 	= loader.o \
-						common/printf.o \
-						common/screen.o	\
-						common/interrupt.o \
-						common/descriptor_tables.o \
-						common/isr.o \
-						common/gdt.o \
-						common/memory.o \
-						common/PCI/pci.o \
-						common/devices/keyboard.o \
-						common/devices/timer.o \
-						common/stdlib/paging.o \
-						common/stdlib/kernelheap.o \
-						common/stdlib/ordered_array.o \
-						common/stdlib/task.o \
-						common/stdlib/process.o \
-						kernel.o
-
-all: kernel.bin
-rebuild: clean all
-
-image: kernel.bin
-					@echo -e "\033[92mCreating image \033[1mDuckOS.img\033[0m"
-					@cp ./kernel.bin ./img/boot/
-					@grub2-mkrescue -o duck.img img
-
-cleanimage:
-					@rm -f ./img/boot/kernel.bin
-
-loader.o: loader.s
-				$(AS) $(ASFLAGS) -o $@ $<
-
-common/interrupt.o: common/interrupt.s
-				$(AS) $(ASFLAGS) -o $@ $<
-
-common/gdt.o: common/gdt.s
-				$(AS) $(ASFLAGS) -o $@ $<
-
-common/stdlib/process.s: common/stdlib/process.s
-				$(AS) $(ASFLAGS) -o $@ $<
-
-.c.o:
-				$(CC) -Iinclude $(CFLAGS) -o $@ -c $<
-
-kernel.bin: $(OBJFILES)
-				$(LD) $(LDFLAGS) -T linker.ld -o $@ $^
-				cp $@ $@.gdb
-				strip $@
-
-clean:
-				@rm -f $(OBJFILES)
+	@if [ "$(shell systemctl is-active scm-server)" = "active" ]; then \
+	systemctl --quiet stop scm-server; \
+	echo -e "[${GREEN}Success${NC}] stop 'scm-server' service"; \
+	systemctl --quiet disable scm-server; \
+	echo -e "[${GREEN}Success${NC}] unregister 'scm-server' service "; \
+	systemctl --quiet daemon-reload; \
+	echo -e "[${CYAN}info${NC}] reload daemons "; \
+	fi;
+	@if [ -d $(DIR_LINUX_PROGRAM_LOCATION) ]; then \
+	rm -rf $(DIR_LINUX_PROGRAM_LOCATION); \
+	echo -e "[${GREEN}Success${NC}] deleted program path in $(DIR_LINUX_PROGRAM_LOCATION)"; \
+	fi;
+	@if [ -e $(SCM_SYSTEMD_SERVICE_PATH) ]; then \
+	rm -f $(SCM_SYSTEMD_SERVICE_PATH); \
+	echo -e "[${GREEN}Success${NC}] systemd UNIT service file successfuly removed"; \
+	fi;
+	@echo -e "[${GREEN}Success${NC}] SCM removed from this computer "
 
 
+install:
+	@if [ $(shell id -u) -ne 0 ]; then echo -e "[${RED}Error${NC}] This script must be run as root" 1>&2; exit 1; fi;
+	@if [ ! -d  $(DIR_LINUX_PROGRAM_LOCATION) ]; \
+	then mkdir -p $(DIR_LINUX_PROGRAM_LOCATION); \
+	echo -e "[${GREEN}Success${NC}] created program path in directory $(DIR_LINUX_PROGRAM_LOCATION)"; \
+	else echo -e "[${CYAN}info${NC}] folder $(DIR_LINUX_PROGRAM_LOCATION) exist"; \
+	fi;
+
+	@if [ ! -d  $(DIR_LINUX_SYSTEMD_PATH) ]; \
+	then mkdir -p $(DIR_LINUX_SYSTEMD_PATH); \
+	echo -e "[${GREEN}Success${NC}] created SYSTEMD path in $(DIR_LINUX_SYSTEMD_PATH)";  \
+	else echo -e "[${CYAN}info${NC}] the catalog $(DIR_LINUX_SYSTEMD_PATH) exist"; \
+	fi;
+
+	@echo -e "[${GREEN}Success${NC}] maked needed file hierarchy"
+	@cp $(REPO_SCM_SERVICE_PATH)$(SCM_SERVICE_NAME) $(SCM_SYSTEMD_SERVICE_PATH)
+	@cp -avr $(SCM_DIRECTORY)* $(DIR_LINUX_PROGRAM_LOCATION)
+	@echo -e "[${GREEN}Success${NC}] moved program to location"
+	@systemctl enable scm-server
+	@systemctl start scm-server
+	@echo -e "[${GREEN}Success${NC}] started systemd service"
+
+runloc:
+	@if [ $(shell id -u) -ne 0 ]; then echo -e "[${RED}Error${NC}] This script must be run as root" 1>&2; exit 1; fi
+	@if [ "$(shell /usr/bin/python3 service/test_port.py)" -eq "0" ] ; then \
+	/usr/bin/python3 scm.py &>/dev/null & \
+	echo -e "[${GREEN}Success${NC}] service run with pid "$(shell pgrep scm.py); \
+	else \
+	echo -e "[${RED}Error${NC}] port is already used motherfucka"; \
+	fi;
+
+kill:
+	@if [ $(shell id -u) -ne 0 ]; then echo -e "[${RED}Error${NC}] This script must be run as root" 1>&2; exit 1; fi
+
+	@if [ "$(shell systemctl is-active scm-server)" = "active" ]; then \
+	systemctl --quiet stop scm-server; \
+	echo -e "[${GREEN}Success${NC}] server stoped"; \
+	else \
+	if [ ! -z "$(shell pgrep scm.py)" ] && [ -n $(shell pgrep scm.py) ] && [ $(shell pgrep scm.py) -eq $(shell pgrep scm.py) ]  2>/dev/null; then \
+	kill $(shell pgrep scm.py); \
+	echo -e "[${GREEN}Success${NC}] server killed"; \
+	else \
+	echo -e "[${RED}Error${NC}]: PID does not exist" >&2; exit 1; \
+	fi; \
+	fi;
