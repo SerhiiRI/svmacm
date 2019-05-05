@@ -1,6 +1,6 @@
 <div align="center">
   
-<img width="50%" height="50%" src=https://github.com/SerhiiRI/svmacm/blob/master/scm.jpg>
+<img width="60%" src=https://github.com/SerhiiRI/svmacm/blob/master/scm.png>
   
 </div>
 
