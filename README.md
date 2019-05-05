@@ -13,6 +13,7 @@
  #### Wymagania:
  - Docker
  - Python 3+
+ - GNU/make 
  
  #### Instalacja
  Instalacja aplikacji odbywa sie za pomocą poleceń 
