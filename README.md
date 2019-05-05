@@ -1,6 +1,6 @@
 <div align="center">
   
-<img width="50%" height="50%" src=https://github.com/SerhiiRI/svmacm/blob/master/scm.jpg>
+<img width="75%" src=https://github.com/SerhiiRI/svmacm/blob/master/scm.png>
   
 </div>
 
@@ -13,11 +13,11 @@
  #### Wymagania:
  - Docker
  - Python 3+
+ - GNU/make 
  
  #### Instalacja
  Instalacja aplikacji odbywa sie za pomocą poleceń 
  ```Shell
- make config
  sudo make install
  ```
  Usuwania aplikacji 
@@ -26,8 +26,13 @@
  ```
  Odpalenia servera bez instalacji
  ```bash
- sudo make run-local
+ sudo make runloc
  ```
+ Dla otrzymania dodatkowej informacji:
+ ```bash
+ make help
+ ```
+ 
  #### Stworzyli:
  - SerhiiRI
  - MarcinO400
