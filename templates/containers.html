@@ -2,51 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>SCM|Containers</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles/minimalistic-view.css">
+    <!--<link href="https://fonts.googleapis.com/css?family=Bungee+Inline|Bungee+Shade|Kaushan+Script|Pacifico|Press+Start+2P" rel="stylesheet">-->
+    <link href="https://fonts.googleapis.com/css?family=Bungee+Inline|Bungee+Shade|Kaushan+Script|Pacifico|Poiret+One|Press+Start+2P|Space+Mono|VT323" rel="stylesheet">
+
 </head>
+{% include "menu.html" %}
 <body>
-<!--<table>-->
-    <!--<thead>-->
-    <!--<tr>-->
-        <!--<th>ID</th>-->
-        <!--<th>name</th>-->
-        <!--<th>type</th>-->
-        <!--<th>Network Recieved</th>-->
-        <!--<th>Network Transceived</th>-->
-        <!--<th>Unit</th>-->
-        <!--<th>CPU</th>-->
-        <!--<th>RAM</th>-->
-        <!--<th>image name</th>-->
-        <!--<th>version</th>-->
+<span style="font-family: 'Space Mono', monospace; font-size: 30px; margin-left: 30px;">Containers:{ </span>
+<hr>
 
-        <!--<th>stop</th>-->
-        <!--<th>start</th>-->
-        <!--<th>reload</th>-->
-        <!--<th>delete</th>-->
-    <!--</tr>-->
-    <!--</thead>-->
-    <!--<tbody>-->
-    <!--{% for row_index in conatiners %}-->
-    <!--<tr>-->
-        <!--<td>{{ container['id'] }}</td>-->
-        <!--<td>{{ container['name'] }}</td>-->
-        <!--<td>{{ container['type'] }}</td>-->
-        <!--<td>{{ container['network']['receive'] }}</td>-->
-        <!--<td>{{ container['network']['transceive'] }}</td>-->
-        <!--<td>{{ container['network']['unit'] }}</td>-->
-        <!--<td>{{ container['cpu'] }}%</td>-->
-        <!--<td>{{ container['memory'] }}%</td>-->
-        <!--<td>{{ container['image']['name'] }}</td>-->
-        <!--<td>{{ container['image']['version'] }}</td>-->
-        <!--<td>{{ container['status'] }}</td>-->
-
-        <!--<td>stop</td>-->
-        <!--<td>start</td>-->
-        <!--<td>reload</td>-->
-        <!--<td>delete</td>-->
-    <!--</tr>-->
-    <!--{% endfor %}-->
-    <!--</tbody>-->
-<!--</table>-->
+<script src="/static/scripts/container_loader.js"></script>
+<div id="contentTable">
+{% include "container_table_template.html" %}
+</div>
+<hr>
+<span style="font-family: 'Space Mono', monospace; font-size: 30px; margin-left: 30px;">} <span style="color: gray"></span></span>
 </body>
 </html>

@@ -100,7 +100,6 @@ def authenticate(f):
                 if (key):
                     print(" => login is verified", end='')
                     return f(key=key, *args, **kwargs)
-
         return f(key=None)
     return decorator
 

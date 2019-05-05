@@ -2,9 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>SCM|Images</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles/minimalistic-view.css">
+    <!--<link href="https://fonts.googleapis.com/css?family=Bungee+Inline|Bungee+Shade|Kaushan+Script|Pacifico|Press+Start+2P" rel="stylesheet">-->
+    <link href="https://fonts.googleapis.com/css?family=Bungee+Inline|Bungee+Shade|Kaushan+Script|Pacifico|Poiret+One|Press+Start+2P|Space+Mono|VT323" rel="stylesheet">
+
 </head>
+{% include "menu.html" %}
 <body>
-images
+<span style="font-family: 'Space Mono', monospace; font-size: 30px; margin-left: 30px;">Images:{ </span>
+<hr>
+
+<script src="/static/scripts/image_loader.js"></script>
+<div id="contentTable">
+{% include "image_table_template.html" %}
+</div>
+<hr>
+<span style="font-family: 'Space Mono', monospace; font-size: 30px; margin-left: 30px;">}</span>
 </body>
 </html>

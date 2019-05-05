@@ -1,6 +1,6 @@
 import json
 
-from flask import Blueprint
+from flask import Blueprint, Response
 from flask import request, render_template, make_response
 
 from blueprints.containerRoute import JSONContainers
@@ -62,6 +62,11 @@ def JSONImageTemplateByImage(image) -> dict:
 def JSONImages(images: list):
     return [[JSONImageTemplate(*version.split(":")) for version in image.tags ]for image in images]
 
+
+def DICTImages(images: list) -> list:
+    return [[JSONImageTemplate(*version.split(":")) for version in image.tags ]for image in images]
+
+
 # > renderMain - główny blueprint
 # odpowiedzialny za generacje strony
 # tytulowej. Ona zawiera dokumentacje
@@ -81,12 +86,16 @@ def getImages(key=None):
             return GetHelp("/images")
         return getJsonResponce(request_data_dictionary)
     else:
-        print(request.method, request.content_type, request.method == "GET")
         if (key != None):
-            resp = make_response(render_template("index.html", type="admin", key=key))
+            Images = __Image_Controller.list()
+            print(DICTImages(Images))
+            resp = make_response(render_template("images.html", type="admin", key=key, images=DICTImages(Images)))
             resp.set_cookie("key", key)
             return resp
-    resp = make_response(render_template("index.html", type="user"))
+    resp = Response()
+    resp.mimetype = "plain/text"
+    resp.status_code = 302
+    resp.location = "/"
     return resp
 
 
@@ -129,4 +138,39 @@ def getJsonResponce(request_data:dict):
             else:
                 return JSONMessage([("images", "[]")])
     return JSONError(0, "None defined exception")
+
+@imageRoute.route('/images_', methods=["POST"])
+@JSONValidation(JSONUserTPLT["login_key"], JSONUserTPLT["image"], JSONUserTPLT["images"], JSONUserTPLT["image_tag"])
+@authenticate
+def getContainersAjax(key=None):
+
+    if(request.content_type == "application/json" and key != None):
+        print("=====",request.get_json())
+        return getHTMLResponce(request.get_json())
+    if(key == None):
+        return "/images_ route please login"
+    return "/images_ : Not correct request handling"
+
+
+def getHTMLResponce(request_data:dict):
+    function = request_data["function"]
+    if ("image" in request_data):
+        tag = request_data["tag"] if ("tag" in request_data) else "latest"
+        imagename = request_data["image"] if ":" in request_data["image"] else "{}:{}".format(request_data["image"],
+                                                                                              tag)
+        if (function == "pull"):
+            if request_data["tag"] == "all":
+                tag = None
+            __Image_Controller.pull(request_data["image"], tag=tag)
+        if (function == "delete"): __Image_Controller.delete(imagename)
+        if (function == "run"): __Image_Controller.run(imagename)
+    if ("type" in request_data):
+        if (function == "deleteall"):__Image_Controller.delete_all()
+        if (function == "prune"):__Image_Controller.prune()
+
+    Images = __Image_Controller.list()
+    if (len(Images) == 0):
+        return "Empty image list"
+    s = DICTImages(Images)
+    return make_response(render_template("image_table_template.html", images=s))
 

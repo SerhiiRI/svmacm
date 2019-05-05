@@ -1,7 +1,7 @@
 from multiprocessing import Pool
 import json
 
-from flask import Blueprint
+from flask import Blueprint, Response
 from flask import request, render_template, make_response
 from lib.ContainerController import ContainerController
 from lib.dockerAPI.container_function import \
@@ -69,6 +69,7 @@ def JSONContainersTemplateMinimize(
         "type": "container",
         "name": name,
         "id": container_id,
+        "id_short": container_id[:10],
         "image": {
             "name": image,
             "version": version
@@ -91,6 +92,7 @@ def JSONContainersTemplate(
         "type": "container",
         "name": name,
         "id": container_id,
+        "id_short":container_id[:10],
         "network": {
             "received": receive,
             "transceived": transceive,
@@ -105,6 +107,42 @@ def JSONContainersTemplate(
         "status": status
     }
 
+# TODO Refactor this pfease of shit
+def DICTContainers(
+        containers: list,
+) -> list:
+    def getJSONContainerTemplate(container):
+        STATDICT = container.stats(stream=False)
+        image, version = imageNameTag(container)
+        status = containerStatus(container)
+        name, container_id = containerNameId(STATDICT)
+        if (status == "running"):
+            receive, transceive = networkUsage(STATDICT, 'MB')
+            cpu = cpuPercentUsage(STATDICT)
+            memory = memoryRAM(STATDICT)
+            unit = "KB"
+            return JSONContainersTemplate(
+                name=name,
+                container_id=container_id,
+                receive=receive,
+                transceive=transceive,
+                unit=unit,
+                cpu=cpu,
+                memory=memory,
+                image=image,
+                version=version,
+                status=status
+            )
+        else:
+            return JSONContainersTemplateMinimize(
+                name=name,
+                container_id=container_id,
+                image=image,
+                version=version,
+                status=status
+            )
+    return list(map(getJSONContainerTemplate, containers))
+
 __Container_Controller = ContainerController()
 
 containerRoute = Blueprint(name           ='containers',
@@ -115,21 +153,26 @@ containerRoute = Blueprint(name           ='containers',
 @containerRoute.route('/containers', methods=["POST", "GET"])
 @JSONValidation(JSONUserTPLT["login_key"], JSONUserTPLT["container"], JSONUserTPLT["containers"])
 @authenticate
-def getImages(key=None):
+def getContainers(key=None):
     if(request.content_type == "application/json"):
         request_data_dictionary = request.get_json()
         if len(request_data_dictionary.keys()) == 1 and "key" in request_data_dictionary:
             return GetHelp("/containers")
         return getJsonResponce(request_data_dictionary)
     else:
-        print(request.method, request.content_type, request.method == "GET")
         if (key != None):
-            resp = make_response(render_template("index.html", type="admin", key=key))
+            Containers = __Container_Controller.list()
+            print(Containers)
+            s = DICTContainers(Containers)
+            resp = make_response(render_template("containers.html", type="admin", key=key, containers=s))
             resp.set_cookie("key", key)
             return resp
-    print("======ERROR")
-    resp = make_response(render_template("index.html", type="user"))
+    resp = Response()
+    resp.mimetype = "plain/text"
+    resp.status_code = 302
+    resp.location = "/"
     return resp
+
 
 
 def getJsonResponce(request_data:dict):
@@ -168,3 +211,36 @@ def getJsonResponce(request_data:dict):
                 return JSONError(500, "Container API crash")
     return JSONError(0, "None defined request")
 
+
+@containerRoute.route('/containers_', methods=["POST"])
+@JSONValidation(JSONUserTPLT["login_key"], JSONUserTPLT["container"], JSONUserTPLT["containers"])
+@authenticate
+def getContainersAjax(key=None):
+
+    if(request.content_type == "application/json" and key != None):
+        print("=====",request.get_json())
+        return getHTMLResponce(request.get_json())
+    if(key == None):
+        return "/container_ route please login"
+    return "/container_ : Not correct request handling"
+
+
+def getHTMLResponce(request_data:dict):
+    function = request_data["function"]
+    if("id" in request_data):
+        if (None == __Container_Controller.get(request_data["id"])):
+            return JSONError(500, "container not found")
+        if (function == "start"): __Container_Controller.start_container(request_data["id"])
+        if (function == "stop"): __Container_Controller.stop_container(request_data["id"])
+        if (function == "remove"): __Container_Controller.delete(request_data["id"])
+    if("type" in request_data):
+        if (function == "startall"): __Container_Controller.start_all_containers()
+        if (function == "stopall"):__Container_Controller.stop_all_containers()
+        if (function == "removeall"):__Container_Controller.remove_all_containers()
+    Containers = __Container_Controller.list()
+    print(Containers)
+    if(len(Containers) == 0):
+        return "Empty containers list"
+    s = DICTContainers(Containers)
+    resp = make_response(render_template("container_table_template.html", containers=s))
+    return resp

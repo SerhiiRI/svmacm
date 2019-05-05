@@ -1,0 +1,101 @@
+<script src="/static/scripts/container_loader.js"></script>
+<table id="containers-table" class="content-table">
+    <thead>
+    <tr>
+        <td>identificator</td>
+        <td>name</td>
+        <td>type</td>
+        <td>Down</td>
+        <td>Up</td>
+        <td>Unit</td>
+        <td>CPU</td>
+        <td>RAM</td>
+        <td>image</td>
+        <td>version</td>
+        <td>status</td>
+
+
+        <td><button type="button" class="button magenta-button" onclick="stopallContainers()">stop all</button></td>
+        <td><button type="button" class="button magenta-button" onclick="startallContainers()">start all</button></td>
+        <td><button type="button" class="button magenta-button" onclick="deleteallContainers()">delete all</button></td>
+        <td><button type="button" class="button magenta-button" onclick="reloadallContainers()">reload</button></td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for container in containers %}
+    <tr>
+
+        {%if 'id_short' in container %}
+                <td><b style="font-family: 'Space Mono', monospace">{{ container['id_short'] }}</b></td>
+        {% else %}
+                <td></td>
+        {% endif %}
+
+        {%if 'name' in container %}
+        <td><div style="text-align: left; margin-right: 4px; margin-left: 4px;">{{ container['name'] }}</div></td>
+        {% else %}
+                <td></td>
+        {% endif %}
+
+        {%if 'type' in container %}
+                <td>{{ container['type'] }}</td>
+        {% else %}
+                <td></td>
+        {% endif %}
+
+        {%if 'network' in container %}
+                <td>{{ container['network']['received'] }}</td>
+        {% else %}
+                <td></td>
+        {% endif %}
+
+        {%if 'network' in container %}
+                <td>{{ container['network']['transceived'] }}</td>
+        {% else %}
+                <td></td>
+        {% endif %}
+
+        {%if 'network' in container %}
+                <td>{{ container['network']['unit'] }}</td>
+        {% else %}
+                <td></td>
+        {% endif %}
+
+        {%if 'cpu' in container %}
+                <td>{{ container['cpu'] }}%</td>
+        {% else %}
+                <td></td>
+        {% endif %}
+
+        {%if 'ram' in container %}
+                <td>{{ container['ram'] }}%</td>
+        {% else %}
+                <td></td>
+        {% endif %}
+
+        {%if 'image' in container %}
+                <td>{{ container['image']['name'] }}</td>
+        {% else %}
+                <td></td>
+        {% endif %}
+
+        {%if 'image' in container %}
+                <td>{{ container['image']['version'] }}</td>
+        {% else %}
+                <td></td>
+        {% endif %}
+
+        {%if 'status' in container %}
+                <td>{{ container['status'] }}</td>
+        {% else %}
+                <td></td>
+        {% endif %}
+
+        <td><button class="button magenta-button" type="button" onclick="stopContainer('{{container['id']}}')">stop</button></td>
+        <td><button class="button magenta-button" type="button" onclick="startContainer('{{ container['id']}}')">start</button></td>
+        <td><button class="button magenta-button" type="button" onclick="removeContainer('{{ container['id']}}')">delete</button></td>
+        <td><span style="color: #772849"> #!/bash</span></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -138,13 +138,6 @@ footer .author-footer {
     font-family: 'Bungee Shade', cursive;
 }
 
-hr{
-    /*margin-left: 30px;*/
-    width: 850px;
-    border: none;
-    background-image: linear-gradient(to right, #772849, white);
-    height: 4px;
-}
 h4{
     /*margin-left: 30px;*/
 
@@ -169,4 +162,89 @@ p {
     text-indent: 50px;
     text-align: justify;
     font-size: 1.1em;
+}
+table.content-table{
+    width: 100%;
+    text-align: center;
+}
+
+table.content-table thead tr th div.head{
+
+    text-align: center;
+    text-decoration: none;
+
+    /*font-size: 16px;*/
+
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    width: 100%;
+    background-color: white;
+    color: black;
+}
+
+.gray-button {
+  background-color: white;
+  color: black;
+  border: 2px solid #bdbdbd;
+}
+
+.gray-button:hover {
+  background-color: #bdbdbd;
+  color: white;
+}
+
+
+table.content-table thead tr td{
+    font-family: 'Ubuntu', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
+    min-width: 60px;
+    color: #772849;
+    white-space: nowrap;
+}
+table.content-table td:hover{
+    background-color: #ff006f;
+    color: #ffffff;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+table.content-table tbody tr td input[type=text] {
+    background-color: white;
+    color: #000000;
+    margin: 1px 1px;
+    border: none;
+    font-family: "Courier New", Courier, monospace;
+}
+
+#animate-loading-line {
+  width: 0;
+  height: 2px;
+  background-color: #ff006f;
+  opacity:1.0;
+}
+
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  /*padding: 16px 32px;*/
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  /*font-size: 16px;*/
+  /*margin: 4px 2px;*/
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  cursor: pointer;
+    width: 100%;
+}
+
+.magenta-button {
+  background-color: white;
+  color: black;
+  border: 2px solid #ff006f;
+}
+
+.magenta-button:hover {
+  background-color: #ff006f;
+  color: white;
 }
