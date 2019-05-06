@@ -32,8 +32,4 @@
  ```bash
  make help
  ```
- 
- #### Stworzyli:
- - SerhiiRI
- - MarcinO400
- 
+
