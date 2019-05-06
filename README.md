@@ -17,16 +17,16 @@
  
  #### Instalacja
  Instalacja aplikacji odbywa sie za pomocą poleceń 
- ```Shell
- sudo make install
+ ```bash
+ make install
  ```
  Usuwania aplikacji 
- ```shell
- sudo make remove
+ ```bash
+ make remove
  ```
  Odpalenia servera bez instalacji
  ```bash
- sudo make runloc
+ make runloc
  ```
  Dla otrzymania dodatkowej informacji:
  ```bash
