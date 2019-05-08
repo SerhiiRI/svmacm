@@ -19,5 +19,91 @@
 </div>
 <hr>
 <span style="font-family: 'Space Mono', monospace; font-size: 30px; margin-left: 30px;">}</span>
+
+<script>
+    var Terminal = function (cmdLineContainer, outputContainer){
+        var cmdLine_ = document.querySelector(cmdLineContainer);
+        var output_ = document.querySelector(outputContainer);
+
+        var fs_ = null;
+        var cwd_ = null;
+        var history_ = [];
+        var histpos_ = 0;
+        var histtemp_ = 0;
+
+        window.addEventListener('click', function(e) {
+            cmdLine_.focus();
+        }, false);
+
+        cmdLine_.addEventListener('click', inputTextClick, false);
+        cmdLine_.addEventListener('keydown', historyHandler_, false);
+        cmdLine_.addEventListener('keydown', evalCommand_, false);
+    };
+
+    function inputTextClick(event){
+        this.value = this.value;
+    }
+
+    function historyHandler_(e){
+        if(history_.length){
+            if(e.keyCode == 38 || e.keyCode == 40){
+                if(history_[histpos_]){
+                    history_[histpos_] = this.value;
+                } else {
+                    histtemp = this.value;
+                }
+            }
+            if(e.keyCode == 38){
+                histpos_--;
+                if(histpos_ < 0){
+                    histpos_ = 0;
+                }
+            } else if( e.keyCode == 40) {
+                histpos_++;
+                if(histpos_ == history_.length){
+                    histpos_ = history.length;
+                }
+            }
+            if (e.keyCode == 38 || e.keyCode == 40){
+                this.value = history_[histpos_] ? history_[histpos_] : histtemp_;
+                this.value = this.value;
+            }
+        }
+    }
+
+    function evalCommand_(e){
+        if(e.keyCode== 9){ //Tab
+            e.preventDefault();
+        } else if(e.keyCode == 13) { // Enter
+            if(this.value){
+                history_[history_.length]= this.value;
+                histpos_=history_.length;
+            }
+
+
+            //duplicate crrent input an dapped to output section.
+            var line = this.parentNode.parentNode.cloneNode(true);
+            line.removeAttribute("id");
+            line.classList.add('line');
+            var input = line.querySelector('input.cmdline');
+            input.autofocus = false;
+            input.readOnly = true;
+        }
+    }
+
+</script>
+<!--<textarea id="text" autofocus spellcheck="false"></textarea>-->
+<script>
+    var term = new Terminal('#input-line .cmdline', '#container output');
+
+</script>
+
+<div id="container">
+    <output></output>
+    <div id="input-line" class="input-line">
+        <div class="prompt"></div><div><input class="cmdline" autofocus /></div>
+    </div>
+</div>
+
 </body>
 </html>
