@@ -20,11 +20,12 @@ help:
 	@echo -e "\nDescribe:"
 	@echo -e "\tSCM is a simple program to monitoring and control\n\tdocker virutal machines and images which can\n\twork with JSON api or web grafical interface"
 	@echo -e "\nCommands:"
-	@echo -e "\tinstall\t- install program and run on port 8777"
+	@echo -e "\tinstall\t- install program and run on port 8777 (aumaticali do test)"
 	@echo -e "\trunloc\t- just up the server on port 8777"
 	@echo -e "\tkill\t- kill server matherfucka"
 	@echo -e "\tremove\t- remove all files"
 	@echo -e "\thelp\t- print this message"
+	@echo -e "\ttest\t- test all program depenciest"
 
 
 test:
