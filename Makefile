@@ -45,15 +45,14 @@ test:
 	echo -e "[${RED}Error${NC}] docker system not found " 1>&2; \
 	exit 1; \
 	fi;
-	@if [ $(shell python -c 'import pkgutil; print(1 if pkgutil.find_loader("docker") else 0)') -eq 0 ]; then \
+	@if [ $(shell python3 -c 'import pkgutil; print(1 if pkgutil.find_loader("docker") else 0)') -eq 0 ]; then \
 	pip3 install -U docker; \
 	fi;
-	@if [ $(shell python -c 'import pkgutil; print(1 if pkgutil.find_loader("docker") else 0)') -eq 0 ]; then \
+	@if [ $(shell python3 -c 'import pkgutil; print(1 if pkgutil.find_loader("docker") else 0)') -eq 0 ]; then \
 	echo -e "[${RED}Error${NC}] system can not install library " ; \
 	echo -e "[${CYAN}Info${NC}] you need to install a python docker library "; \
 	echo -e "Make that by writing a command:"; \
 	echo -e "\t\$$>\tsudo pip3 install -U docker "; \
-	echo -e "\t\$$>\tsudo pip3 install -U docker-py "; \
 	exit 1; \
 	fi;
 	@echo -e "[${GREEN}Ok${NC}] everything is installed"; 
