@@ -58,6 +58,13 @@ test:
 	echo -e "\t\$$>\tsudo pip3 install -U docker "; \
 	exit 1; \
 	fi;
+	@if [ $(shell python3 -c 'import pkgutil; print(1 if pkgutil.find_loader("flask") else 0)') -eq 0 ]; then \
+	echo -e "[${RED}Error${NC}] system can not install flask library " ; \
+	echo -e "[${CYAN}Info${NC}] you need to install a python flask library "; \
+	echo -e "Make that by writing a command:"; \
+	echo -e "\t\$$>\tpip3 install -U flask; "; \
+	exit 1; \
+	fi;
 	@echo -e "[${GREEN}Ok${NC}] everything is installed"; 
 
 remove:
