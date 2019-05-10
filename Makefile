@@ -48,6 +48,9 @@ test:
 	@if [ $(shell python3 -c 'import pkgutil; print(1 if pkgutil.find_loader("docker") else 0)') -eq 0 ]; then \
 	pip3 install -U docker; \
 	fi;
+	@if [ $(shell python3 -c 'import pkgutil; print(1 if pkgutil.find_loader("flask") else 0)') -eq 0 ]; then \
+	pip3 install -U flask; \
+	fi;
 	@if [ $(shell python3 -c 'import pkgutil; print(1 if pkgutil.find_loader("docker") else 0)') -eq 0 ]; then \
 	echo -e "[${RED}Error${NC}] system can not install library " ; \
 	echo -e "[${CYAN}Info${NC}] you need to install a python docker library "; \
