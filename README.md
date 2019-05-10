@@ -12,7 +12,7 @@
  
  #### Wymagania:
  - Docker
- - Python 3+
+ - Python 3+ with [docker API](https://pypi.org/project/docker/) and [flask](https://pypi.org/project/Flask/) library
  - GNU/make 
  
  #### Instalacja
