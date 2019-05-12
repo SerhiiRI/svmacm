@@ -108,10 +108,10 @@ install: test
 
 	@echo -e "[${GREEN}Ok${NC}] maked needed file hierarchy"
 	@cp $(REPO_SCM_SERVICE_PATH)$(SCM_SERVICE_NAME) $(SCM_SYSTEMD_SERVICE_PATH)
-	@cp -avr $(SCM_DIRECTORY)* $(DIR_LINUX_PROGRAM_LOCATION)
+	@cp -ar $(SCM_DIRECTORY)* $(DIR_LINUX_PROGRAM_LOCATION)
 	@echo -e "[${GREEN}Ok${NC}] moved program to location"
-	@systemctl enable scm-server
-	@systemctl start scm-server
+	@systemctl enable scm-server &> /dev/null
+	@systemctl start scm-server &> /dev/null
 	@echo -e "[${GREEN}Ok${NC}] started systemd service"
 
 runloc:
