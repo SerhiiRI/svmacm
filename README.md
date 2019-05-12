@@ -33,3 +33,6 @@
  make help
  ```
 
+#### Kategoria: u mnie dziala
+
+W przypadku problemowej instalacji, czy wyżucaniu blędów po typu `docker.error not found` czy blądu po typu `object function can not contain list() parameter` to poleceniam `pip` usuwamy wszystkie wspomnienia o dwóch bibliotekach `docker-py` i `docker`, instalując odnowu bibliteke `docker`. (jeżeli nie idze usunąć cache pip packetów)
